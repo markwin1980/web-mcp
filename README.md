@@ -34,8 +34,9 @@ uv sync
 - markdownify >= 0.13.1
 - readabilipy >= 0.2.0
 - beautifulsoup4 >= 4.12.0
-- pydantic >= 2.0.0
 - mcp >= 1.26.0
+- types-beautifulsoup4 >= 4.12.0.20250516
+- python-dotenv >= 1.0.0
 
 ## 使用方法
 

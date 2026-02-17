@@ -20,8 +20,9 @@ MCP 服务器，提供Web搜索，Web读取等功能
 - markdownify >= 0.13.1（HTML 转 Markdown）
 - readabilipy >= 0.2.0（内容提取）
 - beautifulsoup4 >= 4.12.0（HTML 解析）
-- pydantic >= 2.0.0（数据验证）
 - mcp >= 1.26.0（MCP 协议支持）
+- types-beautifulsoup4 >= 4.12.0.20250516（类型提示）
+- python-dotenv >= 1.0.0（环境变量管理）
 
 ## 专项说明文档
 
