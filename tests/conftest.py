@@ -242,7 +242,7 @@ async def mcp_client():
     """
     # 启动 MCP 服务器进程
     server_process = subprocess.Popen(
-        [sys.executable, "-m", "main"],
+        [sys.executable, "-m", "mcp_stdio"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,

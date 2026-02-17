@@ -1,6 +1,27 @@
 """Web-Search 工具函数 - 提供 MCP 工具接口。"""
 
 import json
+import logging
+from datetime import datetime
+from pathlib import Path
+
+from .client import BaiduSearchClient
+from .config import BaiduSearchConfig
+from .exceptions import BaiduSearchError
+
+# 设置日志
+logger = logging.getLogger("web_search")
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    log_dir = Path("log")
+    log_dir.mkdir(exist_ok=True)
+    log_file = log_dir / f"web_search_{datetime.now().strftime('%Y%m%d')}.log"
+    handler = logging.FileHandler(log_file, encoding="utf-8")
+    handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+    logger.addHandler(handler)
+
+# 全局百度搜索客户端实例
+_baidu_client: BaiduSearchClient | None = None
 
 
 def create_web_search_result(
@@ -21,54 +42,76 @@ def create_web_search_result(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
+def _get_baidu_client() -> BaiduSearchClient:
+    """获取或创建百度搜索客户端实例。"""
+    global _baidu_client
+    if _baidu_client is None:
+        config = BaiduSearchConfig.from_env()
+        _baidu_client = BaiduSearchClient(config)
+    return _baidu_client
+
+
 async def web_search(
     query: str,
     num_results: int = 10,
-    language: str = "zh-cn",
 ) -> str:
     """执行 Web 搜索并返回结果。
 
-    注意：当前使用模拟数据，实际使用时需要集成真实的搜索 API（如 Google、Bing 或 DuckDuckGo）。
+    使用百度智能云千帆 AI 搜索 API 进行搜索。
+    需要设置 BAIDU_API_KEY 环境变量。
 
     Args:
         query: 搜索关键词
-        num_results: 返回结果数量，范围 1-100，默认为 10
-        language: 搜索语言，默认为 zh-cn
+        num_results: 返回结果数量，范围 1-50，默认为 10
 
     Returns:
         JSON 格式的字符串，包含 success、query、results、total_results 和 error 字段
     """
+    # 记录请求
+    logger.info(f"REQUEST - query={query}, num_results={num_results}")
+
     try:
         # 参数验证
-        if not (1 <= num_results <= 100):
+        if not (1 <= num_results <= 50):
+            logger.info(f"RESPONSE - FAILED - query={query}, error=num_results 必须在 1-50 之间")
             return create_web_search_result(
                 success=False,
                 query=query,
-                error="num_results 必须在 1-100 之间",
+                error="num_results 必须在 1-50 之间",
             )
 
-        # TODO: 集成真实的搜索 API
-        # 当前返回模拟数据
-        mock_results = [
-            {
-                "title": f"模拟搜索结果 {i + 1} - {query}",
-                "url": f"https://example.com/result-{i + 1}",
-                "snippet": f"这是关于 {query} 的模拟搜索结果描述。在实际集成后，这里将显示真实的搜索摘要。",
-                "rank": i + 1,
-            }
-            for i in range(min(num_results, 5))  # 模拟最多 5 个结果
-        ]
+        # 获取千帆搜索客户端并执行搜索
+        client = _get_baidu_client()
+        results = await client.search(
+            query=query,
+            num_results=num_results,
+        )
 
+        # 确保每个结果都有 rank 字段
+        for idx, result in enumerate(results):
+            if "rank" not in result:
+                result["rank"] = idx + 1
+
+        logger.info(f"RESPONSE - SUCCESS - query={query}, total_results={len(results)}")
         return create_web_search_result(
             success=True,
             query=query,
-            results=mock_results,
-            total_results=len(mock_results),
+            results=results,
+            total_results=len(results),
         )
 
-    except Exception as e:
+    except BaiduSearchError as e:
+        logger.info(f"RESPONSE - FAILED - query={query}, error={e!s}")
         return create_web_search_result(
             success=False,
             query=query,
-            error=f"搜索错误：{e!s}",
+            error=f"{e!s}",
+        )
+    except Exception as e:
+        error_msg = f"搜索错误：{e!s}"
+        logger.info(f"RESPONSE - FAILED - query={query}, error={error_msg}")
+        return create_web_search_result(
+            success=False,
+            query=query,
+            error=error_msg,
         )

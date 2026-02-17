@@ -31,12 +31,16 @@ web-mcp/
 │   ├── parser.py         # HTML 解析和转换
 │   └── web_reader.py     # Web-Reader 工具实现
 ├── web_search/            # Web-Search 功能模块
-│   ├── __init__.py       # 模块导出
-│   └── web_search.py     # Web-Search 工具实现
+│   ├── __init__.py       # 模块导出，提供公共 API
+│   ├── client.py         # 百度搜索 API 客户端
+│   ├── config.py         # 百度搜索配置管理
+│   ├── exceptions.py     # 自定义异常
+│   └── web_search.py     # Web-Search MCP 工具实现
 ├── .gitignore             # Git 忽略文件配置
 ├── .python-version        # Python 版本锁定
 ├── CLAUDE.md              # AI 助手的项目实现文档
-├── main.py                # MCP 服务器主入口
+├── mcp_sse.py             # MCP 服务器入口（SSE 传输，适用于服务器部署）
+├── mcp_stdio.py           # MCP 服务器入口（stdio 传输）
 ├── pyproject.toml         # 项目配置
 └── README.md              # 用户文档
 ```
@@ -45,9 +49,10 @@ web-mcp/
 
 ### 主入口
 
-| 文件        | 说明                    |
-|-----------|-----------------------|
-| `main.py` | MCP 服务器主入口，定义工具和启动服务器 |
+| 文件              | 说明                              |
+|-----------------|---------------------------------|
+| `mcp_stdio.py`  | MCP 服务器入口（stdio 传输，本地使用）        |
+| `mcp_sse.py`    | MCP 服务器入口（SSE 传输，适用于服务器部署）    |
 
 ### Web-Reader 模块 (`web_reader/`)
 
@@ -63,10 +68,13 @@ web-mcp/
 
 ### Web-Search 模块 (`web_search/`)
 
-| 文件              | 说明                  |
-|-----------------|---------------------|
-| `__init__.py`   | 模块导出，提供公共 API       |
-| `web_search.py` | Web-Search MCP 工具实现 |
+| 文件              | 说明                    |
+|-----------------|-----------------------|
+| `__init__.py`   | 模块导出，提供公共 API         |
+| `client.py`     | 百度智能云千帆 AI 搜索 API 客户端 |
+| `config.py`     | 百度智能云千帆搜索配置管理         |
+| `exceptions.py` | 自定义异常类定义              |
+| `web_search.py` | Web-Search MCP 工具实现   |
 
 ### 测试 (`tests/`)
 

@@ -1,8 +1,9 @@
-"""Web-MCP 服务器主入口 - 使用 FastMCP 实现。"""
+"""Web-MCP 服务器入口 - 使用 stdio 传输。"""
 
 from mcp.server.fastmcp import FastMCP
 
 from web_reader import web_reader
+from web_search import web_search
 
 mcp = FastMCP(
     name="web-mcp",
@@ -10,10 +11,10 @@ mcp = FastMCP(
 )
 
 # 将 web_search 函数注册为 MCP 工具
-# mcp.tool()(web_search)
+mcp.tool()(web_search)
 
 # 将 web_reader 函数注册为 MCP 工具
 mcp.tool()(web_reader)
 
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run(transport="stdio")

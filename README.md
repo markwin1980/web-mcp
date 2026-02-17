@@ -15,10 +15,10 @@
 
 ### Web 搜索
 
-- **快速搜索**：支持多种搜索引擎
+- **百度智能云千帆 AI 搜索**：使用百度千帆 AI 搜索 API 进行高质量搜索
 - **结果排序**：按相关性返回搜索结果
 - **摘要预览**：提供搜索结果摘要
-- **多语言支持**：支持中英文等多种语言
+- **智能排序**：支持 rerank_score 和 authority_score 排序
 
 ## 安装
 
@@ -35,23 +35,24 @@ uv sync
 - readabilipy >= 0.2.0
 - beautifulsoup4 >= 4.12.0
 - pydantic >= 2.0.0
-- mcp >= 1.1.3
+- mcp >= 1.26.0
 
 ## 使用方法
 
-### MCP 服务器配置
+### 运行模式
 
-web-mcp 是一个标准的 MCP 服务器，可以在任何支持 MCP 协议的客户端中使用。
+web-mcp 支持两种运行模式：
 
-#### 服务器参数
+| 模式        | 入口文件           | 传输方式  | 适用场景              |
+|-----------|----------------|-------|-------------------|
+| **本地模式**  | `mcp_stdio.py` | stdio | 本地 Claude 桌面客户端使用 |
+| **服务器模式** | `mcp_sse.py`   | SSE   | 远程服务器部署           |
 
-- **名称**: `web-mcp`
-- **命令**: `python` 或 `uv run`
-- **参数**:
-    - `main.py` （如果使用 `python`）
-    - 或 `python main.py` （如果使用 `uv run`）
+### 本地模式配置
 
-#### 配置示例
+适合在本地机器上运行，无需进行复杂的服务端配置。
+
+#### 配置客户端
 
 在 MCP 客户端的配置文件中添加：
 
@@ -64,7 +65,7 @@ web-mcp 是一个标准的 MCP 服务器，可以在任何支持 MCP 协议的�
         "run",
         "--directory",
         "/path/to/web-mcp",
-        "main.py"
+        "mcp_stdio.py"
       ]
     }
   }
@@ -72,6 +73,40 @@ web-mcp 是一个标准的 MCP 服务器，可以在任何支持 MCP 协议的�
 ```
 
 **注意**: 将 `/path/to/web-mcp` 替换为项目的实际路径。
+
+### 服务器模式配置
+
+配置成http服务的模式，可以共享使用。
+
+#### 启动服务器
+
+```bash
+python mcp_sse.py
+```
+
+#### 环境变量配置
+
+在服务器上创建 `.env` 文件：
+
+```env
+BAIDU_API_KEY=your_api_key_here
+```
+
+#### 客户端配置
+
+在 MCP 客户端的配置文件中添加 SSE 服务器地址：
+
+```json
+{
+  "mcpServers": {
+    "web-mcp": {
+      "url": "http://your-server-address:port/sse"
+    }
+  }
+}
+```
+
+**注意**: 将 `http://your-server-address:port/sse` 替换为实际的服务器地址。
 
 ### 可用工具
 
@@ -81,13 +116,24 @@ web-mcp 提供以下两个工具：
 
 执行 Web 搜索并返回结果。
 
-| 参数            | 类型     | 必填 | 默认值     | 描述                    |
-|---------------|--------|----|---------|-----------------------|
-| `query`       | string | ✅  | -       | 搜索关键词                 |
-| `num_results` | int    | ❌  | `10`    | 返回结果数量，范围 1-100       |
-| `language`    | string | ❌  | `zh-cn` | 搜索语言（如 zh-cn、en-us 等） |
+**注意**: 使用此工具前必须先配置 API Key。
 
-#### 2. webReader
+| 参数            | 类型     | 必填 | 默认值  | 描述             |
+|---------------|--------|----|------|----------------|
+| `query`       | string | ✅  | -    | 搜索关键词          |
+| `num_results` | int    | ❌  | `10` | 返回结果数量，范围 1-50 |
+
+**环境变量配置**:
+
+在项目根目录创建 `.env` 文件，并配置以下内容：
+
+```env
+# 百度智能云 AppBuilder API Key（必需）
+# 获取方式：https://console.bce.baidu.com/qianfan/ais/console/apiKey
+BAIDU_API_KEY=your_api_key_here
+```
+
+#### 2. web_reader
 
 读取网页并转换为 Markdown 或纯文本格式。
 
@@ -117,7 +163,7 @@ MCP 客户端会自动调用 `web_search` 工具并返回搜索结果。
 请帮我读取 https://example.com/article 的内容
 ```
 
-MCP 客户端会自动调用 `webReader` 工具并返回网页内容。
+MCP 客户端会自动调用 `web_reader` 工具并返回网页内容。
 
 ### 返回格式
 
@@ -134,6 +180,10 @@ MCP 客户端会自动调用 `webReader` 工具并返回网页内容。
       "title": "Python 异步编程完整指南",
       "url": "https://example.com/async-python",
       "snippet": "详细介绍 Python 中的 async/await 语法...",
+      "date": "2024-01-15",
+      "website": "example.com",
+      "rerank_score": 0.95,
+      "authority_score": 0.88,
       "rank": 1
     }
   ],
@@ -141,7 +191,7 @@ MCP 客户端会自动调用 `webReader` 工具并返回网页内容。
 }
 ```
 
-#### webReader 返回格式
+#### web_reader 返回格式
 
 成功时的返回示例：
 

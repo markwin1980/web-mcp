@@ -25,7 +25,6 @@ async def test_web_search_tool_schema(mcp_client):
     properties = input_schema["properties"]
     assert "query" in properties, "缺少 query 参数"
     assert "num_results" in properties, "缺少 num_results 参数"
-    assert "language" in properties, "缺少 language 参数"
 
 
 @pytest.mark.asyncio
@@ -36,7 +35,6 @@ async def test_call_web_search(mcp_client):
         {
             "query": "测试搜索",
             "num_results": 5,
-            "language": "zh-cn",
         },
     )
 
@@ -67,7 +65,7 @@ async def test_call_web_search_invalid_params(mcp_client):
         "web_search",
         {
             "query": "测试",
-            "num_results": 200,  # 超出范围
+            "num_results": 51,  # 超出范围（最大50）
         },
     )
 
