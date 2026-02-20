@@ -5,8 +5,8 @@ from typing import Optional
 
 import aiohttp
 
-from web_reader.config import Config
-from web_reader.exceptions import FetchError, URLValidationError
+from url_fetcher.config import Config
+from url_fetcher.exceptions import FetchError, URLValidationError
 
 
 class WebFetcher:

@@ -2,7 +2,7 @@
 
 import pytest
 
-from web_reader.models import WebReaderInput
+from url_fetcher.models import URLFetcherInput
 
 
 @pytest.mark.asyncio
@@ -96,7 +96,7 @@ async def test_extract_metadata(parser, sample_html):
 @pytest.mark.asyncio
 async def test_parse_full(parser, sample_html):
     """测试完整解析流程。"""
-    input_options = WebReaderInput(
+    input_options = URLFetcherInput(
         url="https://example.com/test",
         return_format="markdown",
         retain_images=True,
@@ -116,7 +116,7 @@ async def test_parse_full(parser, sample_html):
 @pytest.mark.asyncio
 async def test_parse_with_text_format(parser, sample_html):
     """测试使用 text 格式而不是 markdown 进行解析。"""
-    input_options = WebReaderInput(
+    input_options = URLFetcherInput(
         url="https://example.com/test",
         return_format="text",
         retain_images=False,

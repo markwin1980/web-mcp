@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 from markdownify import MarkdownConverter
 from readabilipy import simple_json_from_html_string
 
-from web_reader.exceptions import ParseError
-from web_reader.models import ParseResult, WebReaderInput
+from url_fetcher.exceptions import ParseError
+from url_fetcher.models import ParseResult, URLFetcherInput
 
 
 class HTMLParser:
@@ -17,13 +17,13 @@ class HTMLParser:
         """初始化解析器。"""
         pass
 
-    async def parse(self, html: str, url: str, options: WebReaderInput) -> ParseResult:
+    async def parse(self, html: str, url: str, options: URLFetcherInput) -> ParseResult:
         """解析 HTML 内容并提取结构化数据。
 
         Args:
             html: 要解析的 HTML 内容
             url: 原始 URL
-            options: 来自 WebReaderInput 的解析选项
+            options: 来自 URLFetcherInput 的解析选项
 
         Returns:
             包含标题、摘要、内容和元数据的 ParseResult

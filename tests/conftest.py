@@ -8,9 +8,9 @@ from typing import Any
 
 import pytest
 
-from web_reader.config import Config
-from web_reader.fetcher import WebFetcher
-from web_reader.parser import HTMLParser
+from url_fetcher.config import Config
+from url_fetcher.fetcher import WebFetcher
+from url_fetcher.parser import HTMLParser
 
 
 @pytest.fixture

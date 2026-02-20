@@ -25,7 +25,7 @@ async def test_list_tools(mcp_client):
 
     # 验证工具名称
     assert "web_search" in tool_names, "缺少 web_search 工具"
-    assert "web_reader" in tool_names, "缺少 web_reader 工具"
+    assert "url_fetcher" in tool_names, "缺少 url_fetcher 工具"
 
 
 @pytest.mark.asyncio

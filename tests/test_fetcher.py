@@ -2,8 +2,8 @@
 
 import pytest
 
-from web_reader.exceptions import URLValidationError
-from web_reader.fetcher import WebFetcher
+from url_fetcher.exceptions import URLValidationError
+from url_fetcher.fetcher import WebFetcher
 
 
 @pytest.mark.asyncio

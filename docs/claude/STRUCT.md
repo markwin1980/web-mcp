@@ -11,7 +11,7 @@ web-mcp/
 │       ├── MCP_SERVER.md  # MCP 服务器说明
 │       ├── STRUCT.md      # 项目目录结构（本文件）
 │       ├── TEST.md        # 测试运行说明
-│       └── WEB_READER.md  # Web-Reader 模块说明
+│       └── URL_FETCHER.md  # URL-Fetcher 模块说明
 ├── tests/                 # 测试套件
 │   ├── fixtures/          # 测试数据
 │   │   └── sample.html   # HTML 测试样本
@@ -20,16 +20,16 @@ web-mcp/
 │   ├── test_fetcher.py   # 网页获取单元测试
 │   ├── test_mcp_server.py # MCP 服务器集成测试
 │   ├── test_parser.py    # HTML 解析器单元测试
-│   ├── test_web_reader.py # Web-Reader 工具集成测试
+│   ├── test_url_fetcher.py # URL-Fetcher 工具集成测试
 │   └── test_web_search.py # Web-Search 工具集成测试
-├── web_reader/            # Web-Reader 功能模块
+├── url_fetcher/            # URL-Fetcher 功能模块
 │   ├── __init__.py       # 模块导出
 │   ├── config.py         # 配置管理
 │   ├── exceptions.py     # 自定义异常
 │   ├── fetcher.py        # HTTP 请求和缓存管理
 │   ├── models.py         # Pydantic 数据模型
 │   ├── parser.py         # HTML 解析和转换
-│   └── web_reader.py     # Web-Reader 工具实现
+│   └── url_fetcher.py     # URL-Fetcher 工具实现
 ├── web_search/            # Web-Search 功能模块
 │   ├── __init__.py       # 模块导出，提供公共 API
 │   ├── client.py         # 百度搜索 API 客户端
@@ -49,22 +49,22 @@ web-mcp/
 
 ### 主入口
 
-| 文件              | 说明                              |
-|-----------------|---------------------------------|
-| `mcp_stdio.py`  | MCP 服务器入口（stdio 传输，本地使用）        |
-| `mcp_sse.py`    | MCP 服务器入口（SSE 传输，适用于服务器部署）    |
+| 文件             | 说明                         |
+|----------------|----------------------------|
+| `mcp_stdio.py` | MCP 服务器入口（stdio 传输，本地使用）   |
+| `mcp_sse.py`   | MCP 服务器入口（SSE 传输，适用于服务器部署） |
 
-### Web-Reader 模块 (`web_reader/`)
+### URL-Fetcher 模块 (`url_fetcher/`)
 
-| 文件              | 说明                     |
-|-----------------|------------------------|
-| `__init__.py`   | 模块导出，提供公共 API          |
-| `config.py`     | 服务器配置参数管理              |
-| `exceptions.py` | 自定义异常类定义               |
-| `fetcher.py`    | HTTP 请求处理和内存缓存管理       |
-| `models.py`     | Pydantic 数据模型定义（输入/输出） |
-| `parser.py`     | HTML 解析、内容提取和格式转换      |
-| `web_reader.py` | Web-Reader MCP 工具实现    |
+| 文件               | 说明                     |
+|------------------|------------------------|
+| `__init__.py`    | 模块导出，提供公共 API          |
+| `config.py`      | 服务器配置参数管理              |
+| `exceptions.py`  | 自定义异常类定义               |
+| `fetcher.py`     | HTTP 请求处理和内存缓存管理       |
+| `models.py`      | Pydantic 数据模型定义（输入/输出） |
+| `parser.py`      | HTML 解析、内容提取和格式转换      |
+| `url_fetcher.py` | URL-Fetcher MCP 工具实现   |
 
 ### Web-Search 模块 (`web_search/`)
 
@@ -78,16 +78,16 @@ web-mcp/
 
 ### 测试 (`tests/`)
 
-| 文件                   | 说明                    |
-|----------------------|-----------------------|
-| `__init__.py`        | 测试包初始化                |
-| `conftest.py`        | pytest 配置和共享 fixtures |
-| `fixtures/`          | 测试数据目录                |
-| `test_fetcher.py`    | 网页获取和缓存单元测试           |
-| `test_mcp_server.py` | MCP 服务器元数据和协议集成测试     |
-| `test_parser.py`     | HTML 解析和转换单元测试        |
-| `test_web_reader.py` | Web-Reader 工具集成测试     |
-| `test_web_search.py` | Web-Search 工具集成测试     |
+| 文件                    | 说明                    |
+|-----------------------|-----------------------|
+| `__init__.py`         | 测试包初始化                |
+| `conftest.py`         | pytest 配置和共享 fixtures |
+| `fixtures/`           | 测试数据目录                |
+| `test_fetcher.py`     | 网页获取和缓存单元测试           |
+| `test_mcp_server.py`  | MCP 服务器元数据和协议集成测试     |
+| `test_parser.py`      | HTML 解析和转换单元测试        |
+| `test_url_fetcher.py` | URL-Fetcher 工具集成测试    |
+| `test_web_search.py`  | Web-Search 工具集成测试     |
 
 ### 测试数据 (`tests/fixtures/`)
 
@@ -97,12 +97,12 @@ web-mcp/
 
 ### 项目文档 (`docs/claude/`)
 
-| 文件              | 说明              |
-|-----------------|-----------------|
-| `MCP_SERVER.md` | MCP 服务器说明       |
-| `STRUCT.md`     | 项目目录结构（本文件）     |
-| `TEST.md`       | 测试运行说明          |
-| `WEB_READER.md` | Web-Reader 模块说明 |
+| 文件               | 说明               |
+|------------------|------------------|
+| `MCP_SERVER.md`  | MCP 服务器说明        |
+| `STRUCT.md`      | 项目目录结构（本文件）      |
+| `TEST.md`        | 测试运行说明           |
+| `URL_FETCHER.md` | URL-Fetcher 模块说明 |
 
 ### 配置文件
 

@@ -1,12 +1,12 @@
-"""web-reader 的数据模型。"""
+"""url-fetcher 的数据模型。"""
 
 from dataclasses import dataclass, field
 from typing import Literal
 
 
 @dataclass
-class WebReaderInput:
-    """webReader 工具的输入参数。"""
+class URLFetcherInput:
+    """urlFetcher 工具的输入参数。"""
 
     url: str
     return_format: Literal["markdown", "text"] = "markdown"
@@ -35,4 +35,3 @@ class ParseResult:
     content: str
     metadata: dict = field(default_factory=dict)
     success: bool = True
-

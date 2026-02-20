@@ -1,8 +1,8 @@
-# WEB_READER.md
+# URL_FETCHER.md
 
 ## 核心功能
 
-Web-Reader 模块负责读取网页内容，提取主要文本并转换为 Markdown 或纯文本格式。
+URL-Fetcher 模块负责读取网页内容，提取主要文本并转换为 Markdown 或纯文本格式。
 
 ## 处理流程
 
@@ -30,7 +30,7 @@ Web-Reader 模块负责读取网页内容，提取主要文本并转换为 Markd
 
 ### 数据模型 (`models.py`)
 
-**WebReaderInput** - 输入参数：
+**URLFetcherInput** - 输入参数：
 
 - `url`: 目标网址
 - `return_format`: 输出格式（markdown/text）
@@ -49,12 +49,12 @@ Web-Reader 模块负责读取网页内容，提取主要文本并转换为 Markd
 
 ### 配置 (`config.py`)
 
-| 配置项                  | 默认值              | 说明              |
-|----------------------|------------------|-----------------|
-| `user_agent`         | "Web-Reader/1.0" | HTTP User-Agent |
-| `max_content_length` | 1,000,000        | 最大内容字节数         |
-| `cache_ttl`          | 3600             | 缓存有效期（秒）        |
-| `default_timeout`    | 20               | 默认超时（秒）         |
+| 配置项                  | 默认值               | 说明              |
+|----------------------|-------------------|-----------------|
+| `user_agent`         | "URL-Fetcher/1.0" | HTTP User-Agent |
+| `max_content_length` | 1,000,000         | 最大内容字节数         |
+| `cache_ttl`          | 3600              | 缓存有效期（秒）        |
+| `default_timeout`    | 20                | 默认超时（秒）         |
 
 ### 异常类 (`exceptions.py`)
 
@@ -88,5 +88,5 @@ Web-Reader 模块负责读取网页内容，提取主要文本并转换为 Markd
 ## 日志记录
 
 - 日志文件存储在 `log/` 目录
-- 文件名格式：`web_reader_YYYYMMDD.log`
+- 文件名格式：`url_fetcher_YYYYMMDD.log`
 - 记录所有请求和响应（成功/失败）

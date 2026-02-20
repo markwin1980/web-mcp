@@ -1,4 +1,4 @@
-"""Web-Reader 工具集成测试。"""
+"""URL-Fetcher 工具集成测试。"""
 
 import json
 
@@ -6,19 +6,19 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_web_reader_tool_schema(mcp_client):
-    """测试 web_reader 工具的元数据。"""
+async def test_url_fetcher_tool_schema(mcp_client):
+    """测试 url_fetcher 工具的元数据。"""
     tools = await mcp_client.list_tools()
-    web_reader_tool = next(
-        (tool for tool in tools if tool["name"] == "web_reader"), None
+    url_fetcher_tool = next(
+        (tool for tool in tools if tool["name"] == "url_fetcher"), None
     )
 
-    assert web_reader_tool is not None, "找不到 web_reader 工具"
-    assert web_reader_tool["name"] == "web_reader"
-    assert web_reader_tool.get("description"), "缺少工具描述"
+    assert url_fetcher_tool is not None, "找不到 url_fetcher 工具"
+    assert url_fetcher_tool["name"] == "url_fetcher"
+    assert url_fetcher_tool.get("description"), "缺少工具描述"
 
     # 验证输入 schema
-    input_schema = web_reader_tool.get("inputSchema", {})
+    input_schema = url_fetcher_tool.get("inputSchema", {})
     assert input_schema, "缺少输入 schema"
     assert "properties" in input_schema, "缺少 properties 定义"
 
@@ -31,10 +31,10 @@ async def test_web_reader_tool_schema(mcp_client):
 
 
 @pytest.mark.asyncio
-async def test_call_web_reader_with_public_site(mcp_client):
-    """测试调用 web_reader 工具（使用公开网站）。"""
+async def test_call_url_fetcher_with_public_site(mcp_client):
+    """测试调用 url_fetcher 工具（使用公开网站）。"""
     result = await mcp_client.call_tool(
-        "web_reader",
+        "url_fetcher",
         {
             "url": "https://example.com",
             "return_format": "markdown",
@@ -61,10 +61,10 @@ async def test_call_web_reader_with_public_site(mcp_client):
 
 
 @pytest.mark.asyncio
-async def test_call_web_reader_invalid_url(mcp_client):
-    """测试使用无效 URL 调用 web_reader。"""
+async def test_call_url_fetcher_invalid_url(mcp_client):
+    """测试使用无效 URL 调用 url_fetcher。"""
     result = await mcp_client.call_tool(
-        "web_reader",
+        "url_fetcher",
         {
             "url": "not-a-valid-url",
             "return_format": "markdown",
@@ -87,10 +87,10 @@ async def test_call_web_reader_invalid_url(mcp_client):
 
 
 @pytest.mark.asyncio
-async def test_web_reader_invalid_timeout(mcp_client):
+async def test_url_fetcher_invalid_timeout(mcp_client):
     """测试无效的超时参数。"""
     result = await mcp_client.call_tool(
-        "web_reader",
+        "url_fetcher",
         {
             "url": "https://example.com",
             "timeout": 100,  # 超出范围
@@ -112,10 +112,10 @@ async def test_web_reader_invalid_timeout(mcp_client):
 
 
 @pytest.mark.asyncio
-async def test_web_reader_text_format(mcp_client):
+async def test_url_fetcher_text_format(mcp_client):
     """测试返回纯文本格式。"""
     result = await mcp_client.call_tool(
-        "web_reader",
+        "url_fetcher",
         {
             "url": "https://example.com",
             "return_format": "text",
@@ -138,10 +138,10 @@ async def test_web_reader_text_format(mcp_client):
 
 
 @pytest.mark.asyncio
-async def test_web_reader_with_images(mcp_client):
+async def test_url_fetcher_with_images(mcp_client):
     """测试保留图片选项。"""
     result = await mcp_client.call_tool(
-        "web_reader",
+        "url_fetcher",
         {
             "url": "https://example.com",
             "return_format": "markdown",
@@ -163,10 +163,10 @@ async def test_web_reader_with_images(mcp_client):
 
 
 @pytest.mark.asyncio
-async def test_web_reader_no_cache(mcp_client):
+async def test_url_fetcher_no_cache(mcp_client):
     """测试禁用缓存选项。"""
     result = await mcp_client.call_tool(
-        "web_reader",
+        "url_fetcher",
         {
             "url": "https://example.com",
             "no_cache": True,
@@ -187,10 +187,10 @@ async def test_web_reader_no_cache(mcp_client):
 
 
 @pytest.mark.asyncio
-async def test_web_reader_default_params(mcp_client):
+async def test_url_fetcher_default_params(mcp_client):
     """测试使用默认参数。"""
     result = await mcp_client.call_tool(
-        "web_reader",
+        "url_fetcher",
         {
             "url": "https://example.com",
         },

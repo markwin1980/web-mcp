@@ -18,16 +18,16 @@ uv run pytest tests/test_fetcher.py
 uv run pytest tests/test_parser.py
 uv run pytest tests/test_mcp_server.py
 uv run pytest tests/test_web_search.py
-uv run pytest tests/test_web_reader.py
+uv run pytest tests/test_url_fetcher.py
 
 # 运行特定测试用例
 uv run pytest tests/test_web_search.py::test_call_web_search
 
 # 查看测试覆盖率
-uv run pytest --cov=web_reader --cov=web_search --cov=main
+uv run pytest --cov=url_fetcher --cov=web_search --cov=main
 
 # 生成覆盖率 HTML 报告
-uv run pytest --cov=web_reader --cov=web_search --cov=main --cov-report=html
+uv run pytest --cov=url_fetcher --cov=web_search --cov=main --cov-report=html
 ```
 
 ## 测试文件说明
@@ -60,7 +60,7 @@ uv run pytest --cov=web_reader --cov=web_search --cov=main --cov-report=html
 测试 MCP 服务器的初始化、协议信息、工具列表等元数据：
 
 - `test_server_initialization` - 验证服务器进程成功启动
-- `test_list_tools` - 验证能列出所有注册的工具（web_search 和 web_reader）
+- `test_list_tools` - 验证能列出所有注册的工具（web_search 和 url_fetcher）
 - `test_tools_have_descriptions` - 验证所有工具都有描述
 - `test_tools_have_input_schema` - 验证所有工具都有输入 schema
 - `test_concurrent_tool_calls` - 测试并发调用工具的能力
@@ -84,18 +84,18 @@ uv run pytest --cov=web_reader --cov=web_search --cov=main --cov-report=html
 
 **测试方式**: 通过 MCP 客户端调用工具，验证返回的 JSON 结果格式和内容
 
-### `test_web_reader.py` - Web-Reader 工具测试
+### `test_url_fetcher.py` - URL-Fetcher 工具测试
 
-测试 web_reader 工具的功能和参数处理：
+测试 url_fetcher 工具的功能和参数处理：
 
-- `test_web_reader_tool_schema` - 验证工具的输入 schema（url、return_format、retain_images、timeout、no_cache）
-- `test_call_web_reader_with_public_site` - 测试基本网页读取功能（使用 example.com）
-- `test_call_web_reader_invalid_url` - 测试无效 URL 处理
-- `test_web_reader_invalid_timeout` - 测试无效超时参数处理
-- `test_web_reader_text_format` - 测试纯文本格式输出
-- `test_web_reader_with_images` - 测试保留图片选项
-- `test_web_reader_no_cache` - 测试禁用缓存选项
-- `test_web_reader_default_params` - 测试默认参数使用
+- `test_url_fetcher_tool_schema` - 验证工具的输入 schema（url、return_format、retain_images、timeout、no_cache）
+- `test_call_url_fetcher_with_public_site` - 测试基本网页读取功能（使用 example.com）
+- `test_call_url_fetcher_invalid_url` - 测试无效 URL 处理
+- `test_url_fetcher_invalid_timeout` - 测试无效超时参数处理
+- `test_url_fetcher_text_format` - 测试纯文本格式输出
+- `test_url_fetcher_with_images` - 测试保留图片选项
+- `test_url_fetcher_no_cache` - 测试禁用缓存选项
+- `test_url_fetcher_default_params` - 测试默认参数使用
 
 **测试方式**: 通过 MCP 客户端调用工具，验证返回的 JSON 结果格式和内容
 
