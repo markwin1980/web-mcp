@@ -13,11 +13,9 @@ from url_fetcher.models import ParseResult, URLFetcherInput
 class HTMLParser:
     """解析 HTML 并转换为 Markdown。"""
 
-    def __init__(self):
-        """初始化解析器。"""
-        pass
+    # __init__ 方法使用默认实现，无需自定义
 
-    async def parse(self, html: str, url: str, options: URLFetcherInput) -> ParseResult:
+    def parse(self, html: str, url: str, options: URLFetcherInput) -> ParseResult:
         """解析 HTML 内容并提取结构化数据。
 
         Args:
@@ -128,7 +126,7 @@ class HTMLParser:
         return "无可用摘要"
 
     def _truncate_summary(self, text: str, max_length: int = 200) -> str:
-        """将摘要截断到最大长度。
+        """将摘要截断到最大长度（对中文友好）。
 
         Args:
             text: 要截断的文本
@@ -139,7 +137,8 @@ class HTMLParser:
         """
         if len(text) <= max_length:
             return text
-        return text[:max_length].rsplit(" ", 1)[0] + "..."
+        # 中文友好截断：直接截取并添加省略号
+        return text[:max_length - 3] + "..."
 
     def _html_to_markdown(self, html: str, retain_images: bool) -> str:
         """将 HTML 转换为 Markdown。
@@ -160,8 +159,8 @@ class HTMLParser:
         )
         markdown = converter.convert(html)
 
-        # 清理多余的空白
-        markdown = re.sub(r"\n{3,}", "\n\n", markdown)
+        # 清理多余的空白：将3个或更多连续换行替换为2个
+        markdown = re.sub(r"\n\n\n+", "\n\n", markdown)
         return markdown.strip()
 
     def _html_to_text(self, html: str) -> str:
@@ -175,8 +174,8 @@ class HTMLParser:
         """
         soup = BeautifulSoup(html, "html.parser")
         text = soup.get_text(separator="\n")
-        # 清理多余的空白
-        text = re.sub(r"\n{3,}", "\n\n", text)
+        # 清理多余的空白：将3个或更多连续换行替换为2个
+        text = re.sub(r"\n\n\n+", "\n\n", text)
         return text.strip()
 
     def _extract_metadata(self, original_html: str, content: str, summary: str) -> dict:

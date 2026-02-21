@@ -102,7 +102,7 @@ async def test_parse_full(parser, sample_html):
         retain_images=True,
     )
 
-    result = await parser.parse(sample_html, "https://example.com/test", input_options)
+    result = parser.parse(sample_html, "https://example.com/test", input_options)
 
     assert result.success is True
     assert result.url == "https://example.com/test"
@@ -122,7 +122,7 @@ async def test_parse_with_text_format(parser, sample_html):
         retain_images=False,
     )
 
-    result = await parser.parse(sample_html, "https://example.com/test", input_options)
+    result = parser.parse(sample_html, "https://example.com/test", input_options)
 
     assert result.success is True
     # 不应有 markdown 标题

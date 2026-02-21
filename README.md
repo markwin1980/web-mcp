@@ -49,20 +49,7 @@ uv run playwright install chromium
 
 ## 使用方法
 
-### 运行模式
-
-web-mcp 支持两种运行模式：
-
-| 模式        | 入口文件           | 传输方式  | 适用场景              |
-|-----------|----------------|-------|-------------------|
-| **本地模式**  | `mcp_stdio.py` | stdio | 本地 Claude 桌面客户端使用 |
-| **服务器模式** | `mcp_sse.py`   | SSE   | 远程服务器部署           |
-
-### 本地模式配置
-
-适合在本地机器上运行，无需进行复杂的服务端配置。
-
-#### 配置客户端
+### 配置客户端
 
 在 MCP 客户端的配置文件中添加：
 
@@ -84,42 +71,6 @@ web-mcp 支持两种运行模式：
 
 **注意**: 将 `/path/to/web-mcp` 替换为项目的实际路径。
 
-### 服务器模式配置
-
-配置成http服务的模式，可以共享使用。
-
-#### 启动服务器
-
-```bash
-uv run python mcp_sse.py
-```
-
-#### 环境变量配置（可选）
-
-在服务器上创建 `.env` 文件（可选配置）：
-
-```env
-# Playwright 配置（可选，有默认值）
-PLAYWRIGHT_HEADLESS=true
-PLAYWRIGHT_TIMEOUT=30000
-```
-
-#### 客户端配置
-
-在 MCP 客户端的配置文件中添加 SSE 服务器地址：
-
-```json
-{
-  "mcpServers": {
-    "web-mcp": {
-      "url": "http://your-server-address:port/sse"
-    }
-  }
-}
-```
-
-**注意**: 将 `http://your-server-address:port/sse` 替换为实际的服务器地址。
-
 ### 可用工具
 
 web-mcp 提供以下两个工具：
@@ -135,7 +86,7 @@ web-mcp 提供以下两个工具：
 | `query`       | string | ✅  | -    | 搜索关键词          |
 | `num_results` | int    | ❌  | `10` | 返回结果数量，范围 1-50 |
 
-#### 2. web_reader
+#### 2. url_fetcher
 
 读取网页并转换为 Markdown 或纯文本格式。
 
@@ -165,7 +116,7 @@ MCP 客户端会自动调用 `web_search` 工具并返回搜索结果。
 请帮我读取 https://example.com/article 的内容
 ```
 
-MCP 客户端会自动调用 `web_reader` 工具并返回网页内容。
+MCP 客户端会自动调用 `url_fetcher` 工具并返回网页内容。
 
 ### 返回格式
 
@@ -189,7 +140,7 @@ MCP 客户端会自动调用 `web_reader` 工具并返回网页内容。
 }
 ```
 
-#### web_reader 返回格式
+#### url_fetcher 返回格式
 
 成功时的返回示例：
 
@@ -235,6 +186,6 @@ uv sync --dev
 uv run pytest
 
 # 运行测试并查看覆盖率
-uv run pytest --cov=web_search --cov=web_reader --cov-report=html
+uv run pytest --cov=url_fetcher --cov=web_search --cov-report=html
 ```
 

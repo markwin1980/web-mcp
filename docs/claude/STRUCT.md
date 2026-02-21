@@ -32,14 +32,13 @@ web-mcp/
 │   └── url_fetcher.py     # URL-Fetcher 工具实现
 ├── web_search/            # Web-Search 功能模块
 │   ├── __init__.py       # 模块导出，提供公共 API
-│   ├── client.py         # 百度搜索 API 客户端
-│   ├── config.py         # 百度搜索配置管理
+│   ├── client.py         # Bing 搜索客户端（使用 Playwright）
+│   ├── config.py         # Bing 搜索配置管理
 │   ├── exceptions.py     # 自定义异常
 │   └── web_search.py     # Web-Search MCP 工具实现
 ├── .gitignore             # Git 忽略文件配置
 ├── .python-version        # Python 版本锁定
 ├── CLAUDE.md              # AI 助手的项目实现文档
-├── mcp_sse.py             # MCP 服务器入口（SSE 传输，适用于服务器部署）
 ├── mcp_stdio.py           # MCP 服务器入口（stdio 传输）
 ├── pyproject.toml         # 项目配置
 └── README.md              # 用户文档
@@ -52,7 +51,6 @@ web-mcp/
 | 文件             | 说明                         |
 |----------------|----------------------------|
 | `mcp_stdio.py` | MCP 服务器入口（stdio 传输，本地使用）   |
-| `mcp_sse.py`   | MCP 服务器入口（SSE 传输，适用于服务器部署） |
 
 ### URL-Fetcher 模块 (`url_fetcher/`)
 
@@ -68,13 +66,13 @@ web-mcp/
 
 ### Web-Search 模块 (`web_search/`)
 
-| 文件              | 说明                    |
-|-----------------|-----------------------|
-| `__init__.py`   | 模块导出，提供公共 API         |
+| 文件              | 说明                        |
+|-----------------|---------------------------|
+| `__init__.py`   | 模块导出，提供公共 API             |
 | `client.py`     | Bing 搜索客户端（使用 Playwright） |
-| `config.py`     | Bing 搜索配置管理             |
-| `exceptions.py` | 自定义异常类定义              |
-| `web_search.py` | Web-Search MCP 工具实现   |
+| `config.py`     | Bing 搜索配置管理               |
+| `exceptions.py` | 自定义异常类定义                  |
+| `web_search.py` | Web-Search MCP 工具实现       |
 
 ### 测试 (`tests/`)
 

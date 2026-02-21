@@ -20,12 +20,16 @@ parser = HTMLParser()
 logger = logging.getLogger("url_fetcher")
 logger.setLevel(logging.INFO)
 if not logger.handlers:
-    log_dir = Path("log")
-    log_dir.mkdir(exist_ok=True)
-    log_file = log_dir / f"url_fetcher_{datetime.now().strftime('%Y%m%d')}.log"
-    handler = logging.FileHandler(log_file, encoding="utf-8")
-    handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
-    logger.addHandler(handler)
+    try:
+        log_dir = Path("log")
+        log_dir.mkdir(exist_ok=True)
+        log_file = log_dir / f"url_fetcher_{datetime.now().strftime('%Y%m%d')}.log"
+        handler = logging.FileHandler(log_file, encoding="utf-8")
+        handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+        logger.addHandler(handler)
+    except (OSError, PermissionError) as e:
+        # 如果无法创建日志文件，使用 NullHandler 避免日志错误
+        logger.addHandler(logging.NullHandler())
 
 
 def create_url_fetcher_result(
@@ -63,20 +67,21 @@ async def url_fetcher(
         f"REQUEST - url={url}, return_format={return_format}, retain_images={retain_images}, timeout={timeout}, no_cache={no_cache}")
 
     try:
-        if not (5 <= timeout <= 60):
-            logger.info(f"RESPONSE - FAILED - url={url}, error=timeout 必须在 5-60 之间")
-            return create_url_fetcher_result(False, url, error="timeout 必须在 5-60 之间")
-
         input_data = URLFetcherInput(
             url=url, return_format=return_format, retain_images=retain_images,
             timeout=timeout, no_cache=no_cache,
         )
         html = await fetcher.fetch(input_data.url, input_data.timeout, input_data.no_cache)
-        result = await parser.parse(html, input_data.url, input_data)
+        result = parser.parse(html, input_data.url, input_data)
 
         logger.info(f"RESPONSE - SUCCESS - url={url}, title={result.title}")
         return create_url_fetcher_result(True, result.url, result.title, result.summary, result.content, result.metadata)
 
+    except ValueError as e:
+        # URLFetcherInput 验证失败
+        error_msg = f"参数验证失败：{e!s}"
+        logger.info(f"RESPONSE - FAILED - url={url}, error={error_msg}")
+        return create_url_fetcher_result(False, url, error=error_msg)
     except Exception as e:
         error_msg = f"{type(e).__name__}: {e!s}"
         logger.info(f"RESPONSE - FAILED - url={url}, error={error_msg}")

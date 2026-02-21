@@ -83,7 +83,23 @@ async def test_fetch_invalid_url(fetcher):
 
 @pytest.mark.asyncio
 async def test_fetch_with_cache(fetcher, sample_html):
-    """测试启用缓存时返回缓存结果。"""
-    # 注意：此测试需要模拟 HTTP 响应
-    # 目前，我们只测试缓存机制
-    pass
+    """测试缓存存储和检索功能。"""
+    url = "https://example.com/test"
+
+    # 直接测试缓存功能：手动存储到缓存
+    fetcher._store_in_cache(url, sample_html)
+
+    # 验证缓存已存储
+    cached = fetcher._get_from_cache(url)
+    assert cached == sample_html
+
+    # 验证 LRU 行为：再次访问应该将条目移到末尾
+    fetcher._get_from_cache(url)
+
+    # 添加更多缓存条目来测试 LRU 淘汰
+    for i in range(fetcher._MAX_CACHE_SIZE):
+        fetcher._store_in_cache(f"https://example.com/page{i}", f"content {i}")
+
+    # 原始的 URL 应该已经被淘汰（因为它在最前面）
+    cached_after = fetcher._get_from_cache(url)
+    assert cached_after is None  # 应该已被 LRU 淘汰

@@ -251,3 +251,207 @@ async def test_web_search_minimum_results(mcp_client):
     assert result_data["success"] is True
     assert result_data["total_results"] == 1
     assert len(result_data["results"]) == 1
+
+
+@pytest.mark.asyncio
+async def test_web_search_empty_query(mcp_client):
+    """测试空查询或仅包含空格的查询。"""
+    result = await mcp_client.call_tool(
+        "web_search",
+        {
+            "query": "   ",  # 只有空格
+        },
+    )
+
+    assert result, "工具未返回结果"
+    assert "content" in result, "缺少 content 字段"
+    content_list = result["content"]
+    assert len(content_list) > 0, "content 为空"
+
+    content_item = content_list[0]
+    content = content_item.get("text")
+    assert content, "缺少 text 字段"
+
+    result_data = json.loads(content)
+    assert result_data["success"] is False
+    assert "不能为空" in result_data["error"]
+
+
+@pytest.mark.asyncio
+async def test_web_search_too_long_query(mcp_client):
+    """测试超长查询字符串。"""
+    # 创建一个超过500字符的查询
+    long_query = "a" * 1000
+
+    result = await mcp_client.call_tool(
+        "web_search",
+        {
+            "query": long_query,
+        },
+    )
+
+    assert result, "工具未返回结果"
+    assert "content" in result, "缺少 content 字段"
+    content_list = result["content"]
+    assert len(content_list) > 0, "content 为空"
+
+    content_item = content_list[0]
+    content = content_item.get("text")
+    assert content, "缺少 text 字段"
+
+    result_data = json.loads(content)
+    assert result_data["success"] is False
+    assert "过长" in result_data["error"]
+    # 验证返回的 query 被截断
+    assert len(result_data["query"]) <= 53  # 50 + "..."
+
+@pytest.mark.asyncio
+async def test_web_search_query_with_newline(mcp_client):
+    """测试包含换行符的查询（日志注入攻击防护）。"""
+    # 尝试通过换行符进行日志注入
+    injection_query = "Python\n2024-01-01 - ERROR - 系统被入侵"
+
+    result = await mcp_client.call_tool(
+        "web_search",
+        {
+            "query": injection_query,
+            "num_results": 1,
+        },
+    )
+
+    assert result, "工具未返回结果"
+    assert "content" in result, "缺少 content 字段"
+    content_list = result["content"]
+    assert len(content_list) > 0, "content 为空"
+
+    content_item = content_list[0]
+    content = content_item.get("text")
+    assert content, "缺少 text 字段"
+
+    result_data = json.loads(content)
+    # 搜索应该成功，但返回的 query 中换行符被移除
+    assert result_data["success"] is True
+    assert "\n" not in result_data["query"]
+    assert result_data["query"] == "Python2024-01-01 - ERROR - 系统被入侵"
+
+
+@pytest.mark.asyncio
+async def test_web_search_query_with_control_chars(mcp_client):
+    """测试包含控制字符的查询。"""
+    # 尝试通过 ANSI 转义序列进行注入
+    injection_query = "搜索\x1b[2J\x1b[H内容"
+
+    result = await mcp_client.call_tool(
+        "web_search",
+        {
+            "query": injection_query,
+            "num_results": 1,
+        },
+    )
+
+    assert result, "工具未返回结果"
+    assert "content" in result, "缺少 content 字段"
+    content_list = result["content"]
+    assert len(content_list) > 0, "content 为空"
+
+    content_item = content_list[0]
+    content = content_item.get("text")
+    assert content, "缺少 text 字段"
+
+    result_data = json.loads(content)
+    # 搜索应该成功，但控制字符被移除
+    assert result_data["success"] is True
+    # ESC 字符（\x1b）被移除，但 [2J[H 是普通字符，保留
+    assert "\x1b" not in result_data["query"]
+    assert result_data["query"] == "搜索[2J[H内容"
+
+
+@pytest.mark.asyncio
+async def test_web_search_query_with_tab(mcp_client):
+    """测试包含制表符的查询。"""
+    # 制表符也是控制字符，应该被移除
+    tab_query = "Python\t编程\t教程"
+
+    result = await mcp_client.call_tool(
+        "web_search",
+        {
+            "query": tab_query,
+            "num_results": 1,
+        },
+    )
+
+    assert result, "工具未返回结果"
+    assert "content" in result, "缺少 content 字段"
+    content_list = result["content"]
+    assert len(content_list) > 0, "content 为空"
+
+    content_item = content_list[0]
+    content = content_item.get("text")
+    assert content, "缺少 text 字段"
+
+    result_data = json.loads(content)
+    # 搜索应该成功，但制表符被移除
+    assert result_data["success"] is True
+    assert "\t" not in result_data["query"]
+    assert result_data["query"] == "Python编程教程"
+
+
+@pytest.mark.asyncio
+async def test_web_search_query_at_max_length(mcp_client):
+    """测试刚好500字符的查询（边界测试）。"""
+    # 创建一个刚好500字符的查询
+    max_query = "a" * 500
+
+    result = await mcp_client.call_tool(
+        "web_search",
+        {
+            "query": max_query,
+            "num_results": 1,
+        },
+    )
+
+    assert result, "工具未返回结果"
+    assert "content" in result, "缺少 content 字段"
+    content_list = result["content"]
+    assert len(content_list) > 0, "content 为空"
+
+    content_item = content_list[0]
+    content = content_item.get("text")
+    assert content, "缺少 text 字段"
+
+    result_data = json.loads(content)
+    # 刚好500字符应该成功
+    assert result_data["success"] is True
+    assert result_data["query"] == max_query
+
+
+@pytest.mark.asyncio
+async def test_web_search_query_with_leading_trailing_spaces(mcp_client):
+    """测试包含首尾空格的查询。"""
+    # 首尾有空格的查询应该被正确处理
+    space_query = "  Python 编程  "
+
+    result = await mcp_client.call_tool(
+        "web_search",
+        {
+            "query": space_query,
+            "num_results": 1,
+        },
+    )
+
+    assert result, "工具未返回结果"
+    assert "content" in result, "缺少 content 字段"
+    content_list = result["content"]
+    assert len(content_list) > 0, "content 为空"
+
+    content_item = content_list[0]
+    content = content_item.get("text")
+    assert content, "缺少 text 字段"
+
+    result_data = json.loads(content)
+    # 搜索应该成功，首尾空格被移除
+    assert result_data["success"] is True
+    assert result_data["query"] == "Python 编程"
+    assert not result_data["query"].startswith(" ")
+    assert not result_data["query"].endswith(" ")
+
