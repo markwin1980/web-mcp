@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import Any
 
 from browser_service import get_global_browser_service
-from .client import BingSearchClient
-from .config import BingSearchConfig
-from .exceptions import BingSearchError
+from web_search.bing_client import BingClient
+from web_search.config import BingSearchConfig
+from web_search.exceptions import BingSearchError
 
 logger = logging.getLogger("web_search")
 logger.setLevel(logging.INFO)
@@ -97,7 +97,7 @@ async def web_search(
             )
 
         browser_service = await get_global_browser_service()
-        client = BingSearchClient(
+        client = BingClient(
             search_config=search_config,
             browser_service=browser_service
         )

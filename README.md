@@ -31,17 +31,16 @@ uv sync
 ### 依赖要求
 
 - **系统要求**：
-  - Python >= 3.11
+    - Python >= 3.11
 
 - **Python 依赖**：
-  - aiohttp >= 3.9.0
-  - markdownify >= 0.13.1
-  - beautifulsoup4 >= 4.12.0
-  - mcp >= 1.26.0
-  - types-beautifulsoup4 >= 4.12.0.20250516
-  - python-dotenv >= 1.0.0
-  - playwright >= 1.58.0
-  - playwright-stealth >= 2.0.2
+    - markdownify >= 0.13.1
+    - beautifulsoup4 >= 4.12.0
+    - mcp >= 1.26.0
+    - types-beautifulsoup4 >= 4.12.0.20250516
+    - python-dotenv >= 1.0.0
+    - playwright >= 1.58.0
+    - playwright-stealth >= 2.0.2
 
 **首次使用需要安装以下组件**：
 
@@ -99,11 +98,10 @@ web-mcp 提供以下两个工具：
 |-----------------|---------|----|------------|---------------------------------------|
 | `url`           | string  | ✅  | -          | 要读取的网页 URL（必须以 http:// 或 https:// 开头） |
 | `return_format` | string  | ❌  | `markdown` | 返回格式：`markdown` 或 `text`              |
-| `retain_images` | boolean | ❌  | `true`     | 是否在输出中保留图片                            |
 | `timeout`       | integer | ❌  | `20`       | 请求超时时间（秒），范围 5-60                     |
-| `no_cache`      | boolean | ❌  | `false`    | 是否禁用缓存（保留参数，当前暂未实现）                |
 
 **关于内容提取**：
+
 - 使用 Mozilla Readability.js 算法，提取准确率高，能更好地处理复杂网页结构
 - Readability.js 脚本位置：`res/Readability.js`
 
@@ -184,7 +182,7 @@ MCP 客户端会自动调用 `url_fetcher` 工具并返回网页内容。
 
 ```bash
 # 安装开发依赖
-uv sync --dev
+uv sync --extra dev
 
 # 运行测试
 uv run pytest

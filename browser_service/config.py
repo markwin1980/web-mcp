@@ -1,14 +1,12 @@
 """浏览器服务配置。"""
 
 from dataclasses import dataclass
-from typing import Literal
 
 
 @dataclass
 class BrowserConfig:
     """浏览器服务配置。"""
 
-    browser_type: Literal["chromium", "firefox", "webkit"] = "chromium"
     headless: bool = True
 
     user_agent: str = (

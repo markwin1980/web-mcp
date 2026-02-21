@@ -1,11 +1,10 @@
 """浏览器服务模块 - 提供浏览器和页面池管理功能。"""
 
 import asyncio
-import logging
 
 from .browser_service import BrowserService
 from .config import BrowserConfig
-from .exception import (
+from .exceptions import (
     BrowserError,
     BrowserInitializationError,
     PageClosedError,
@@ -14,8 +13,6 @@ from .exception import (
 
 _global_browser_service: BrowserService | None = None
 _browser_service_lock = asyncio.Lock()
-
-logger = logging.getLogger(__name__)
 
 
 async def get_global_browser_service() -> BrowserService:

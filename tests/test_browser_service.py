@@ -326,45 +326,6 @@ async def test_browser_service_initialize_chromium(browser_service):
 
 
 @pytest.mark.asyncio
-async def test_browser_service_initialize_firefox():
-    """测试初始化 Firefox 浏览器。"""
-    config = BrowserConfig(browser_type="firefox", headless=True)
-    service = BrowserService(config)
-
-    with patch("playwright.async_api.async_playwright") as mock_playwright_fn:
-        # 设置模拟
-        mock_playwright = MagicMock()
-        mock_playwright.start = AsyncMock(return_value=mock_playwright)
-        mock_playwright.firefox.launch = AsyncMock()
-        mock_browser = MagicMock(spec=Browser)
-        mock_playwright.firefox.launch.return_value = mock_browser
-        mock_playwright_fn.return_value = mock_playwright
-
-        # 初始化
-        await service.initialize()
-
-        # 验证
-        assert service.is_initialized is True
-        mock_playwright.firefox.launch.assert_called_once_with(headless=True)
-
-
-@pytest.mark.asyncio
-async def test_browser_service_initialize_unsupported_browser():
-    """测试初始化不支持的浏览器类型。"""
-    config = BrowserConfig(browser_type="unsupported")
-    service = BrowserService(config)
-
-    with patch("playwright.async_api.async_playwright") as mock_playwright_fn:
-        mock_playwright = MagicMock()
-        mock_playwright.start = AsyncMock(return_value=mock_playwright)
-        mock_playwright_fn.return_value = mock_playwright
-
-        # 应该抛出异常
-        with pytest.raises(BrowserInitializationError, match="不支持的浏览器类型"):
-            await service.initialize()
-
-
-@pytest.mark.asyncio
 async def test_browser_service_create_page_without_init(browser_service):
     """测试未初始化时创建页面。"""
     with pytest.raises(BrowserError, match="浏览器未初始化"):

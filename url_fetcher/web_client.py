@@ -1,23 +1,61 @@
 """使用 Playwright + Readability.js 获取网页内容。"""
 
-import os
+import ipaddress
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlparse
 
 from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 
 from browser_service import BrowserService
-from url_fetcher.config import Config
-from url_fetcher.exceptions import FetchError, URLValidationError
+from url_fetcher.config import FetcherConfig
+from url_fetcher.exceptions import FetchError, URLValidationError, UnsafeURLError
 
-READABILITY_JS_PATH = Path(os.getcwd()) / "res" / "Readability.js"
+# 获取项目根目录（从当前文件路径向上两级）
+READABILITY_JS_PATH = Path(__file__).parent.parent / "res" / "Readability.js"
+
+
+def _is_safe_url(url: str) -> bool:
+    """验证 URL 是否安全（防止 SSRF 攻击）。
+
+    Args:
+        url: 要验证的 URL
+
+    Returns:
+        URL 是否安全
+    """
+    try:
+        parsed = urlparse(url)
+
+        # 只允许 http 和 https 协议
+        if parsed.scheme not in ("http", "https"):
+            return False
+
+        hostname = parsed.hostname
+        if not hostname:
+            return False
+
+        # 检查是否是内网 IP 地址
+        try:
+            ip = ipaddress.ip_address(hostname)
+            # 拒绝私有地址、回环地址和链路本地地址
+            if ip.is_private or ip.is_loopback or ip.is_link_local:
+                return False
+        except ValueError:
+            # 不是 IP 地址，是域名，允许通过
+            pass
+
+        return True
+
+    except Exception:
+        return False
 
 
 class WebClient:
     """使用 Playwright + Readability.js 获取网页。"""
 
-    def __init__(self, config: Optional[Config] = None, *, browser_service: BrowserService):
-        self.config = config or Config()
+    def __init__(self, config: Optional[FetcherConfig] = None, *, browser_service: BrowserService):
+        self.config = config or FetcherConfig()
         self._browser_service = browser_service
 
         if not READABILITY_JS_PATH.exists():
@@ -37,8 +75,11 @@ class WebClient:
             - byline: 作者
             - length: 长度
         """
-        if not url.startswith(("http://", "https://")):
-            raise URLValidationError(f"无效的 URL 协议：{url}")
+        # 验证 URL 安全性
+        if not _is_safe_url(url):
+            if not url.startswith(("http://", "https://")):
+                raise URLValidationError(f"无效的 URL 协议：{url}")
+            raise UnsafeURLError(f"URL 指向不安全的地址（内网地址等）：{url}")
 
         page = None
         try:

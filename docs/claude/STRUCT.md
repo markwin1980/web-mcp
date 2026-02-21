@@ -10,7 +10,7 @@ web-mcp/
 │   ├── __init__.py       # 模块导出
 │   ├── browser_service.py # 浏览器和页面池管理
 │   ├── config.py         # 浏览器配置管理
-│   └── exception.py      # 浏览器相关异常
+│   └── exceptions.py     # 浏览器相关异常
 ├── docs/                  # 项目文档
 │   └── claude/           # AI 助手专项说明文档
 │       ├── BROWSER_SERVICE.md # 浏览器服务模块说明
@@ -37,7 +37,7 @@ web-mcp/
 │   └── web_client.py    # Playwright 网页获取客户端
 ├── web_search/           # Web-Search 功能模块
 │   ├── __init__.py      # 模块导出，提供公共 API
-│   ├── client.py        # Bing 搜索客户端（使用 Playwright）
+│   ├── bing_client.py   # Bing 搜索客户端（使用 Playwright）
 │   ├── config.py        # Bing 搜索配置管理
 │   ├── exceptions.py    # 自定义异常
 │   └── web_search.py    # Web-Search MCP 工具实现
@@ -69,15 +69,15 @@ web-mcp/
 |----------------------|---------------------------|
 | `__init__.py`        | 模块导出，提供公共 API             |
 | `browser_service.py` | 浏览器和页面池管理（BrowserService） |
-| `config.py`          | 浏览器配置管理（BrowserConfig）    |
-| `exception.py`       | 浏览器相关异常类定义                |
+| `config.py`          | BrowserConfig 浏览器配置类    |
+| `exceptions.py`      | 浏览器相关异常类定义                |
 
 ### URL-Fetcher 模块 (`url_fetcher/`)
 
 | 文件               | 说明                   |
 |------------------|----------------------|
 | `__init__.py`    | 模块导出，提供公共 API        |
-| `config.py`      | 服务器配置参数管理            |
+| `config.py`      | FetcherConfig 配置类        |
 | `exceptions.py`  | 自定义异常类定义             |
 | `html_parser.py` | HTML 解析、内容提取和格式转换    |
 | `url_fetcher.py` | URL-Fetcher MCP 工具实现 |
@@ -88,8 +88,8 @@ web-mcp/
 | 文件              | 说明                        |
 |-----------------|---------------------------|
 | `__init__.py`   | 模块导出，提供公共 API             |
-| `client.py`     | Bing 搜索客户端（使用 Playwright） |
-| `config.py`     | Bing 搜索配置管理               |
+| `bing_client.py` | Bing 搜索客户端（使用 Playwright） |
+| `config.py`     | BingSearchConfig 搜索配置类               |
 | `exceptions.py` | 自定义异常类定义                  |
 | `web_search.py` | Web-Search MCP 工具实现       |
 

@@ -1,7 +1,6 @@
 """URL-Fetcher 工具集成测试。"""
 
 import json
-import time
 
 import pytest
 
@@ -28,9 +27,7 @@ async def test_url_fetcher_tool_schema(mcp_client):
     properties = input_schema["properties"]
     assert "url" in properties, "缺少 url 参数"
     assert "return_format" in properties, "缺少 return_format 参数"
-    assert "retain_images" in properties, "缺少 retain_images 参数"
     assert "timeout" in properties, "缺少 timeout 参数"
-    assert "no_cache" in properties, "缺少 no_cache 参数"
 
 
 @pytest.mark.asyncio
@@ -41,7 +38,6 @@ async def test_call_url_fetcher_with_public_site(mcp_client):
         {
             "url": TEST_URL,
             "return_format": "markdown",
-            "retain_images": False,
             "timeout": 20,
         },
     )
@@ -118,7 +114,6 @@ async def test_url_fetcher_text_format(mcp_client):
         {
             "url": TEST_URL,
             "return_format": "text",
-            "retain_images": False,
         },
     )
 
@@ -145,7 +140,6 @@ async def test_url_fetcher_markdown_format(mcp_client):
         {
             "url": TEST_URL,
             "return_format": "markdown",
-            "retain_images": False,
         },
     )
 
@@ -161,96 +155,6 @@ async def test_url_fetcher_markdown_format(mcp_client):
     result_data = json.loads(content)
     assert "url" in result_data
     assert "content" in result_data
-
-
-@pytest.mark.asyncio
-async def test_url_fetcher_with_images(mcp_client):
-    """测试保留图片选项。"""
-    result = await mcp_client.call_tool(
-        "url_fetcher",
-        {
-            "url": TEST_URL,
-            "return_format": "markdown",
-            "retain_images": True,
-        },
-    )
-
-    assert result, "工具未返回结果"
-    assert "content" in result, "缺少 content 字段"
-    content_list = result["content"]
-    assert len(content_list) > 0, "content 为空"
-
-    content_item = content_list[0]
-    content = content_item.get("text")
-    assert content, "缺少 text 字段"
-
-    result_data = json.loads(content)
-    assert "url" in result_data
-
-
-@pytest.mark.asyncio
-async def test_url_fetcher_cache_functionality(mcp_client):
-    """测试缓存功能（第二次请求应该更快）。"""
-    url = TEST_URL
-
-    # 第一次请求
-    start = time.time()
-    result1 = await mcp_client.call_tool(
-        "url_fetcher",
-        {
-            "url": url,
-            "return_format": "markdown",
-        },
-    )
-    first_duration = time.time() - start
-
-    assert result1, "第一次请求失败"
-    assert "content" in result1
-    content1 = json.loads(result1["content"][0]["text"])
-    assert content1["success"] is True
-
-    # 第二次请求（应该使用缓存）
-    start = time.time()
-    result2 = await mcp_client.call_tool(
-        "url_fetcher",
-        {
-            "url": url,
-            "return_format": "markdown",
-        },
-    )
-    second_duration = time.time() - start
-
-    assert result2, "第二次请求失败"
-    assert "content" in result2
-    content2 = json.loads(result2["content"][0]["text"])
-    assert content2["success"] is True
-
-    # 验证内容一致
-    assert content1["content"] == content2["content"]
-
-
-@pytest.mark.asyncio
-async def test_url_fetcher_no_cache(mcp_client):
-    """测试禁用缓存选项。"""
-    result = await mcp_client.call_tool(
-        "url_fetcher",
-        {
-            "url": TEST_URL,
-            "no_cache": True,
-        },
-    )
-
-    assert result, "工具未返回结果"
-    assert "content" in result, "缺少 content 字段"
-    content_list = result["content"]
-    assert len(content_list) > 0, "content 为空"
-
-    content_item = content_list[0]
-    content = content_item.get("text")
-    assert content, "缺少 text 字段"
-
-    result_data = json.loads(content)
-    assert "url" in result_data
 
 
 @pytest.mark.asyncio

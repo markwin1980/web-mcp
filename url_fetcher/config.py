@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Config:
+class FetcherConfig:
     """url-fetcher 的配置设置。"""
 
     default_timeout: int = 20

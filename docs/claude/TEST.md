@@ -99,9 +99,6 @@ uv run pytest --cov=url_fetcher --cov=web_search --cov-report=html
 - `test_url_fetcher_invalid_timeout` - 测试无效超时参数处理
 - `test_url_fetcher_text_format` - 测试纯文本格式输出
 - `test_url_fetcher_markdown_format` - 测试 Markdown 格式输出
-- `test_url_fetcher_with_images` - 测试保留图片选项
-- `test_url_fetcher_cache_functionality` - 测试缓存功能
-- `test_url_fetcher_no_cache` - 测试禁用缓存选项
 - `test_url_fetcher_default_params` - 测试默认参数使用
 - `test_url_fetcher_content_structure` - 测试返回内容的结构完整性
 

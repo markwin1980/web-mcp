@@ -1,7 +1,6 @@
 """浏览器服务 - 使用 Playwright 管理浏览器和页面池。"""
 
 import asyncio
-import logging
 import time
 from dataclasses import dataclass
 from typing import Any
@@ -9,10 +8,8 @@ from typing import Any
 from playwright.async_api import Browser, Page
 from playwright_stealth import Stealth
 
-from .config import BrowserConfig
-from .exception import BrowserError, BrowserInitializationError, PageCreationError
-
-logger = logging.getLogger(__name__)
+from browser_service.config import BrowserConfig
+from browser_service.exceptions import BrowserError, BrowserInitializationError, PageCreationError
 
 
 @dataclass
@@ -107,7 +104,7 @@ class PagePool:
                 await pooled.page.close()
                 await pooled.context.close()
             except Exception:
-                pass
+                pass  # 关闭页面时的错误不影响清理流程
             self._pool.remove(pooled)
 
     async def close_all(self):
@@ -118,7 +115,7 @@ class PagePool:
                     await pooled.page.close()
                     await pooled.context.close()
                 except Exception:
-                    pass
+                    pass  # 关闭页面时的错误不影响清理流程
             self._pool.clear()
 
 
@@ -146,23 +143,9 @@ class BrowserService:
             from playwright.async_api import async_playwright
 
             self._playwright = await async_playwright().start()
-
-            if self.config.browser_type == "chromium":
-                self._browser = await self._playwright.chromium.launch(
-                    headless=self.config.headless,
-                )
-            elif self.config.browser_type == "firefox":
-                self._browser = await self._playwright.firefox.launch(
-                    headless=self.config.headless,
-                )
-            elif self.config.browser_type == "webkit":
-                self._browser = await self._playwright.webkit.launch(
-                    headless=self.config.headless,
-                )
-            else:
-                raise BrowserInitializationError(
-                    f"不支持的浏览器类型: {self.config.browser_type}"
-                )
+            self._browser = await self._playwright.chromium.launch(
+                headless=self.config.headless,
+            )
 
             self._page_pool = PagePool(
                 browser=self._browser,
@@ -171,11 +154,6 @@ class BrowserService:
             )
 
             await self._page_pool.initialize()
-
-            logger.info(
-                f"浏览器已初始化 (type={self.config.browser_type}, "
-                f"headless={self.config.headless})"
-            )
 
         except Exception as e:
             raise BrowserInitializationError(f"浏览器初始化失败: {e}") from e
@@ -204,8 +182,6 @@ class BrowserService:
         if self._playwright:
             await self._playwright.stop()
             self._playwright = None
-
-        logger.info("浏览器已关闭")
 
     async def __aenter__(self) -> "BrowserService":
         await self.initialize()

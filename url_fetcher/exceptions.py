@@ -23,3 +23,9 @@ class ParseError(URLFetcherError):
     """解析 HTML 内容失败时抛出。"""
 
     pass
+
+
+class UnsafeURLError(URLValidationError):
+    """URL 不安全（如内网地址）时抛出。"""
+
+    pass

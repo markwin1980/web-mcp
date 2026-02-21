@@ -16,7 +16,6 @@ MCP 服务器，提供Web搜索，URL获取等功能
 
 - **Python 版本**: 3.11+
 - **依赖管理**: uv
-- aiohttp >= 3.9.0（异步 HTTP 客户端）
 - markdownify >= 0.13.1（HTML 转 Markdown）
 - beautifulsoup4 >= 4.12.0（HTML 解析）
 - mcp >= 1.26.0（MCP 协议支持）

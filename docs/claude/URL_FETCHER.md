@@ -17,6 +17,7 @@ URL-Fetcher 模块负责读取网页内容，使用 Playwright + Readability.js 
 - 使用 Playwright 浏览器加载网页
 - 注入并运行 Mozilla Readability.js 提取文章内容
 - 验证 URL 协议（必须是 http:// 或 https://）
+- **验证 URL 安全性**：拒绝内网 IP 地址（防止 SSRF 攻击）
 - 使用 browser_service 管理页面生命周期
 - Readability.js 脚本位置：`res/Readability.js`
 
@@ -26,9 +27,9 @@ URL-Fetcher 模块负责读取网页内容，使用 Playwright + Readability.js 
 - 使用 BeautifulSoup 解析 HTML
 - 使用 markdownify 转换为 Markdown
 - 提取标题、摘要、内容和元数据
-- 支持保留/移除图片
+- 默认保留图片
 
-### 配置 (`config.py`)
+### FetcherConfig (`config.py`)
 
 | 配置项               | 默认值 | 说明      |
 |-------------------|-----|---------|
@@ -36,11 +37,12 @@ URL-Fetcher 模块负责读取网页内容，使用 Playwright + Readability.js 
 
 ### 异常类 (`exceptions.py`)
 
-| 异常                   | 触发场景      |
-|----------------------|-----------|
-| `URLValidationError` | URL 格式无效  |
-| `FetchError`         | HTTP 请求失败 |
-| `ParseError`         | HTML 解析失败 |
+| 异常                    | 触发场景         |
+|-----------------------|--------------|
+| `URLValidationError`  | URL 格式无效     |
+| `UnsafeURLError`      | URL 不安全（SSRF 防护） |
+| `FetchError`          | 获取网页失败      |
+| `ParseError`          | HTML 解析失败    |
 
 ## 元数据提取
 

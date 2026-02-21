@@ -8,12 +8,12 @@ from pathlib import Path
 from typing import Literal
 
 from browser_service import get_global_browser_service
-from url_fetcher.config import Config
+from url_fetcher.config import FetcherConfig
 from url_fetcher.exceptions import FetchError, URLValidationError
 from url_fetcher.html_parser import HTMLParser
 from url_fetcher.web_client import WebClient
 
-config = Config()
+config = FetcherConfig()
 
 logger = logging.getLogger("url_fetcher")
 logger.setLevel(logging.INFO)
@@ -54,13 +54,11 @@ def create_url_fetcher_result(
 async def url_fetcher(
         url: str,
         return_format: Literal["markdown", "text"] = "markdown",
-        retain_images: bool = True,
         timeout: int = config.default_timeout,
-        no_cache: bool = False,
 ) -> str:
     """读取网页并转换为 Markdown 或纯文本格式。"""
     logger.info(
-        f"REQUEST - url={url}, return_format={return_format}, retain_images={retain_images}, timeout={timeout}, no_cache={no_cache}")
+        f"REQUEST - url={url}, return_format={return_format}, timeout={timeout}")
 
     try:
         url = url.strip()
@@ -100,7 +98,7 @@ async def url_fetcher(
         article = await web_client.fetch(url, timeout)
 
         parser = HTMLParser()
-        result = parser.parse(article, url, return_format, retain_images)
+        result = parser.parse(article, url, return_format)
 
         logger.info(f"RESPONSE - SUCCESS - url={url}, title={result['title']}")
         return create_url_fetcher_result(
@@ -124,3 +122,18 @@ async def url_fetcher(
         error_msg = f"{type(e).__name__}: {e!s}"
         logger.info(f"RESPONSE - FAILED - url={url}, error={error_msg}")
         return create_url_fetcher_result(False, url, error=error_msg)
+
+
+async def test_url_fetcher():
+    from browser_service import initialize_global_browser, close_global_browser
+
+    await initialize_global_browser()
+    result = await url_fetcher("https://zhuanlan.zhihu.com/p/359975221")
+    await close_global_browser()
+    print(result)
+
+
+if __name__ == '__main__':
+    import asyncio
+
+    asyncio.run(test_url_fetcher())

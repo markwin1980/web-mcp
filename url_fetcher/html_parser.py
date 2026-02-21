@@ -17,7 +17,6 @@ class HTMLParser:
         article: dict,
         url: str,
         return_format: str = "markdown",
-        retain_images: bool = True,
     ) -> dict[str, Any]:
         """解析 Readability.js 的文章数据。
 
@@ -25,7 +24,6 @@ class HTMLParser:
             article: Readability.js 返回的字典
             url: 原始 URL
             return_format: 返回格式 ("markdown" 或 "text")
-            retain_images: 是否保留图片
 
         Returns:
             包含解析结果的字典
@@ -39,9 +37,9 @@ class HTMLParser:
             content_html = article.get("content", "")
             summary = article.get("excerpt", "") or self._extract_summary(content_html)
 
-            # 转换为 markdown 或 text
+            # 转换为 markdown 或 text（默认保留图片）
             if return_format == "markdown":
-                content = self._html_to_markdown(content_html, retain_images)
+                content = self._html_to_markdown(content_html, retain_images=True)
             else:
                 content = article.get("textContent", "") or self._html_to_text(content_html)
 

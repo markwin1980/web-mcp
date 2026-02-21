@@ -9,7 +9,7 @@ from .config import BingSearchConfig
 from .exceptions import BingSearchError, PageLoadError, ResultParseError
 
 
-class BingSearchClient:
+class BingClient:
     """使用 Playwright 实现的 Bing 搜索客户端。"""
 
     def __init__(
@@ -127,35 +127,40 @@ class BingSearchClient:
             搜索结果列表，每个结果包含 title, url, snippet, rank
         """
         all_results: list[dict[str, Any]] = []
-        is_first_search = True
+        page = None
 
         try:
+            # 创建页面（只创建一次，用于翻页）
+            page = await self._browser_service.create_page()
+
+            # 执行首次搜索
+            await self._perform_search_on_page(page, query)
+            page_results = await self._get_result_list(page)
+            if not page_results:
+                return []
+            all_results.extend(page_results)
+
+            # 翻页获取更多结果
             while len(all_results) < num_results:
-                page = await self._browser_service.create_page()
+                await asyncio.sleep(self.search_config.result_parse_delay)
 
-                try:
-                    if is_first_search:
-                        await self._perform_search_on_page(page, query)
-                        is_first_search = False
-                    else:
-                        success = await self._click_next_page(page)
-                        if not success:
-                            break
+                success = await self._click_next_page(page)
+                if not success:
+                    break
 
-                    page_results = await self._get_result_list(page)
-                    if not page_results:
-                        break
+                page_results = await self._get_result_list(page)
+                if not page_results:
+                    break
 
-                    all_results.extend(page_results)
-                    await asyncio.sleep(self.search_config.result_parse_delay)
-
-                finally:
-                    await self._browser_service.release_page(page)
+                all_results.extend(page_results)
 
         except BingSearchError:
             raise
         except Exception as e:
             raise BingSearchError(f"搜索失败: {e}") from e
+        finally:
+            if page:
+                await self._browser_service.release_page(page)
 
         for idx, result in enumerate(all_results):
             result["rank"] = idx + 1
