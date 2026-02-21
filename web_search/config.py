@@ -1,40 +1,53 @@
-"""web-search 的配置管理。"""
+"""Bing 搜索的配置管理。"""
 
-import os
 from dataclasses import dataclass
-from dotenv import load_dotenv
+from typing import Literal
 
 
 @dataclass
-class BaiduSearchConfig:
-    """百度智能云千帆 AI 搜索 API 配置。"""
+class BingSearchConfig:
+    """Bing 搜索配置。"""
 
-    api_key: str
-    """百度智能云 AppBuilder API Key"""
+    # Playwright 配置（固定值）
+    browser_type: Literal["chromium"] = "chromium"
+    """浏览器类型，固定使用 chromium"""
 
-    base_url: str = "https://qianfan.baidubce.com/v2/ai_search/web_search"
-    """千帆 AI 搜索 API 基础 URL"""
+    headless: bool = True
+    """是否使用无头模式"""
 
-    timeout: int = 30
-    """请求超时时间（秒）"""
+    timeout: int = 30000
+    """页面加载超时时间（毫秒）"""
 
-    max_retries: int = 3
-    """最大重试次数"""
+    # 搜索配置
+    base_url: str = "https://cn.bing.com"
+    """Bing 基础 URL"""
 
-    search_source: str = "baidu_search_v2"
-    """搜索引擎版本，固定值：baidu_search_v2"""
+    search_url_template: str = "https://cn.bing.com/search?q={query}&first={offset}"
+    """搜索 URL 模板，使用 first 参数控制偏移"""
+
+    # User-Agent（固定配置）
+    user_agent: str = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    )
+    """浏览器 User-Agent"""
+
+    # 延迟配置
+    page_load_delay: float = 1.0
+    """页面加载后等待时间（秒）"""
+
+    result_parse_delay: float = 0.5
+    """结果解析后等待时间（秒）"""
+
+    results_per_page: int = 10
+    """每页结果数量（Bing 默认为 10）"""
 
     @classmethod
-    def from_env(cls) -> "BaiduSearchConfig":
+    def from_env(cls) -> "BingSearchConfig":
         """从环境变量创建配置。
 
-        环境变量:
-            BAIDU_API_KEY: 百度 AppBuilder API Key（必需）
+        Returns:
+            默认的 Bing 搜索配置
         """
-        load_dotenv()
-
-        api_key = os.getenv("BAIDU_API_KEY")
-        if not api_key:
-            raise ValueError("BAIDU_API_KEY 环境变量未设置，请在 .env 文件中配置")
-
-        return cls(api_key=api_key)
+        return cls()

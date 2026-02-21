@@ -71,8 +71,8 @@ web-mcp/
 | 文件              | 说明                    |
 |-----------------|-----------------------|
 | `__init__.py`   | 模块导出，提供公共 API         |
-| `client.py`     | 百度智能云千帆 AI 搜索 API 客户端 |
-| `config.py`     | 百度智能云千帆搜索配置管理         |
+| `client.py`     | Bing 搜索客户端（使用 Playwright） |
+| `config.py`     | Bing 搜索配置管理             |
 | `exceptions.py` | 自定义异常类定义              |
 | `web_search.py` | Web-Search MCP 工具实现   |
 

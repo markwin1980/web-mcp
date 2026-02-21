@@ -1,19 +1,25 @@
-"""web-search 的自定义异常类。"""
+"""Bing 搜索的自定义异常类。"""
 
 
-class BaiduSearchError(Exception):
-    """百度搜索 API 错误的基类异常。"""
-
-    pass
-
-
-class BaiduSearchAuthError(BaiduSearchError):
-    """百度搜索认证错误（API Key 无效）。"""
+class BingSearchError(Exception):
+    """Bing 搜索错误的基类异常。"""
 
     pass
 
 
-class BaiduSearchAPIError(BaiduSearchError):
-    """百度搜索 API 返回错误。"""
+class PlaywrightError(BingSearchError):
+    """Playwright 相关错误。"""
+
+    pass
+
+
+class PageLoadError(BingSearchError):
+    """页面加载错误。"""
+
+    pass
+
+
+class ResultParseError(BingSearchError):
+    """结果解析错误。"""
 
     pass

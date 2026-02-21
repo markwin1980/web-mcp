@@ -5,9 +5,9 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-from .client import BaiduSearchClient
-from .config import BaiduSearchConfig
-from .exceptions import BaiduSearchError
+from .client import BingSearchClient
+from .config import BingSearchConfig
+from .exceptions import BingSearchError
 
 # 设置日志
 logger = logging.getLogger("web_search")
@@ -20,8 +20,8 @@ if not logger.handlers:
     handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
     logger.addHandler(handler)
 
-# 全局百度搜索客户端实例
-_baidu_client: BaiduSearchClient | None = None
+# 全局 Bing 搜索客户端实例
+_bing_client: BingSearchClient | None = None
 
 
 def create_web_search_result(
@@ -42,13 +42,13 @@ def create_web_search_result(
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-def _get_baidu_client() -> BaiduSearchClient:
-    """获取或创建百度搜索客户端实例。"""
-    global _baidu_client
-    if _baidu_client is None:
-        config = BaiduSearchConfig.from_env()
-        _baidu_client = BaiduSearchClient(config)
-    return _baidu_client
+def _get_bing_client() -> BingSearchClient:
+    """获取或创建 Bing 搜索客户端实例。"""
+    global _bing_client
+    if _bing_client is None:
+        config = BingSearchConfig.from_env()
+        _bing_client = BingSearchClient(config)
+    return _bing_client
 
 
 async def web_search(
@@ -57,8 +57,7 @@ async def web_search(
 ) -> str:
     """执行 Web 搜索并返回结果。
 
-    使用百度智能云千帆 AI 搜索 API 进行搜索。
-    需要设置 BAIDU_API_KEY 环境变量。
+    使用 Playwright 访问 Bing.com 进行搜索。
 
     Args:
         query: 搜索关键词
@@ -80,8 +79,8 @@ async def web_search(
                 error="num_results 必须在 1-50 之间",
             )
 
-        # 获取千帆搜索客户端并执行搜索
-        client = _get_baidu_client()
+        # 获取 Bing 搜索客户端并执行搜索
+        client = _get_bing_client()
         results = await client.search(
             query=query,
             num_results=num_results,
@@ -100,7 +99,7 @@ async def web_search(
             total_results=len(results),
         )
 
-    except BaiduSearchError as e:
+    except BingSearchError as e:
         logger.info(f"RESPONSE - FAILED - query={query}, error={e!s}")
         return create_web_search_result(
             success=False,
