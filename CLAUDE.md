@@ -23,17 +23,18 @@ MCP 服务器，提供Web搜索，URL获取等功能
 - mcp >= 1.26.0（MCP 协议支持）
 - types-beautifulsoup4 >= 4.12.0.20250516（类型提示）
 - python-dotenv >= 1.0.0（环境变量管理）
+- playwright >= 1.58.0（浏览器自动化）
+- playwright-stealth >= 2.0.2（反爬虫检测绕过）
 
 ## 专项说明文档
 
 只读取下面列出的文档，其他的markdown文档是给用户参考的，不要读取
 
-| 说明文档                                              | 读取条件               |
-|---------------------------------------------------|--------------------|
-| [STRUCT.md](docs/claude/STRUCT.md)                | 需要查询项目目录结构时        |
-| [TEST.md](docs/claude/TEST.md)                    | 需要对脚本进行运行测试时       |
-| [MCP_SERVER.md](docs/claude/MCP_SERVER.md)        | 处理mcp服务器相关问题时      |
-| [URL_FETCHER.md](docs/claude/URL_FETCHER.md)      | 处理url_fetcher相关问题时 |
-| [WEB_SEARCH.md](docs/claude/WEB_SEARCH.md)        | 处理web_search相关问题时  |
-| [BAIDU_SEARCH.md](docs/reference/BAIDU_SEARCH.md) | 需要了解百度搜索 API 调用方式时 |
+| 说明文档                                          | 读取条件                  |
+|-------------------------------------------------|-------------------------|
+| [STRUCT.md](docs/claude/STRUCT.md)              | 需要查询项目目录结构时         |
+| [TEST.md](docs/claude/TEST.md)                  | 需要对脚本进行运行测试时        |
+| [MCP_SERVER.md](docs/claude/MCP_SERVER.md)      | 处理mcp服务器相关问题时       |
+| [URL_FETCHER.md](docs/claude/URL_FETCHER.md)    | 处理url_fetcher相关问题时  |
+| [WEB_SEARCH.md](docs/claude/WEB_SEARCH.md)      | 处理web_search相关问题时   |
 
