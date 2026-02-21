@@ -30,11 +30,11 @@ MCP 服务器，提供Web搜索，URL获取等功能
 
 只读取下面列出的文档，其他的markdown文档是给用户参考的，不要读取
 
-| 说明文档                                          | 读取条件                  |
-|-------------------------------------------------|-------------------------|
-| [STRUCT.md](docs/claude/STRUCT.md)              | 需要查询项目目录结构时         |
-| [TEST.md](docs/claude/TEST.md)                  | 需要对脚本进行运行测试时        |
-| [MCP_SERVER.md](docs/claude/MCP_SERVER.md)      | 处理mcp服务器相关问题时       |
-| [URL_FETCHER.md](docs/claude/URL_FETCHER.md)    | 处理url_fetcher相关问题时  |
-| [WEB_SEARCH.md](docs/claude/WEB_SEARCH.md)      | 处理web_search相关问题时   |
+| 说明文档                                         | 读取条件               |
+|----------------------------------------------|--------------------|
+| [STRUCT.md](docs/claude/STRUCT.md)           | 需要查询项目目录结构时        |
+| [TEST.md](docs/claude/TEST.md)               | 需要对脚本进行运行测试时       |
+| [MCP_SERVER.md](docs/claude/MCP_SERVER.md)   | 处理mcp服务器相关问题时      |
+| [URL_FETCHER.md](docs/claude/URL_FETCHER.md) | 处理url_fetcher相关问题时 |
+| [WEB_SEARCH.md](docs/claude/WEB_SEARCH.md)   | 处理web_search相关问题时  |
 

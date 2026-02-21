@@ -15,10 +15,11 @@
 
 ### Web 搜索
 
-- **百度智能云千帆 AI 搜索**：使用百度千帆 AI 搜索 API 进行高质量搜索
+- **Bing 搜索**：使用 Playwright 访问 Bing.com 进行真实搜索
+- **无需 API Key**：直接通过浏览器获取搜索结果，无需申请 API 密钥
 - **结果排序**：按相关性返回搜索结果
 - **摘要预览**：提供搜索结果摘要
-- **智能排序**：支持 rerank_score 和 authority_score 排序
+- **支持翻页**：可获取更多搜索结果（默认 10 条，最多 50 条）
 
 ## 安装
 
@@ -37,6 +38,14 @@ uv sync
 - mcp >= 1.26.0
 - types-beautifulsoup4 >= 4.12.0.20250516
 - python-dotenv >= 1.0.0
+- playwright >= 1.58.0
+- playwright-stealth >= 2.0.2
+
+**首次使用需要安装 Playwright 浏览器**：
+
+```bash
+uv run playwright install chromium
+```
 
 ## 使用方法
 
@@ -82,15 +91,17 @@ web-mcp 支持两种运行模式：
 #### 启动服务器
 
 ```bash
-python mcp_sse.py
+uv run python mcp_sse.py
 ```
 
-#### 环境变量配置
+#### 环境变量配置（可选）
 
-在服务器上创建 `.env` 文件：
+在服务器上创建 `.env` 文件（可选配置）：
 
 ```env
-BAIDU_API_KEY=your_api_key_here
+# Playwright 配置（可选，有默认值）
+PLAYWRIGHT_HEADLESS=true
+PLAYWRIGHT_TIMEOUT=30000
 ```
 
 #### 客户端配置
@@ -117,22 +128,12 @@ web-mcp 提供以下两个工具：
 
 执行 Web 搜索并返回结果。
 
-**注意**: 使用此工具前必须先配置 API Key。
+使用 Playwright 访问 Bing 搜索，无需 API Key。
 
 | 参数            | 类型     | 必填 | 默认值  | 描述             |
 |---------------|--------|----|------|----------------|
 | `query`       | string | ✅  | -    | 搜索关键词          |
 | `num_results` | int    | ❌  | `10` | 返回结果数量，范围 1-50 |
-
-**环境变量配置**:
-
-在项目根目录创建 `.env` 文件，并配置以下内容：
-
-```env
-# 百度智能云 AppBuilder API Key（必需）
-# 获取方式：https://console.bce.baidu.com/qianfan/ais/console/apiKey
-BAIDU_API_KEY=your_api_key_here
-```
 
 #### 2. web_reader
 
@@ -181,10 +182,6 @@ MCP 客户端会自动调用 `web_reader` 工具并返回网页内容。
       "title": "Python 异步编程完整指南",
       "url": "https://example.com/async-python",
       "snippet": "详细介绍 Python 中的 async/await 语法...",
-      "date": "2024-01-15",
-      "website": "example.com",
-      "rerank_score": 0.95,
-      "authority_score": 0.88,
       "rank": 1
     }
   ],
@@ -238,6 +235,6 @@ uv sync --dev
 uv run pytest
 
 # 运行测试并查看覆盖率
-uv run pytest --cov=web_reader --cov-report=html
+uv run pytest --cov=web_search --cov=web_reader --cov-report=html
 ```
 
