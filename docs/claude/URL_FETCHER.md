@@ -37,12 +37,12 @@ URL-Fetcher 模块负责读取网页内容，使用 Playwright + Readability.js 
 
 ### 异常类 (`exceptions.py`)
 
-| 异常                    | 触发场景         |
-|-----------------------|--------------|
-| `URLValidationError`  | URL 格式无效     |
-| `UnsafeURLError`      | URL 不安全（SSRF 防护） |
-| `FetchError`          | 获取网页失败      |
-| `ParseError`          | HTML 解析失败    |
+| 异常                   | 触发场景             |
+|----------------------|------------------|
+| `URLValidationError` | URL 格式无效         |
+| `UnsafeURLError`     | URL 不安全（SSRF 防护） |
+| `FetchError`         | 获取网页失败           |
+| `ParseError`         | HTML 解析失败        |
 
 ## 元数据提取
 

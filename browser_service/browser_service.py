@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from playwright.async_api import Browser, Page
-from playwright_stealth import Stealth
+from playwright_stealth_plugin import async_apply
 
 from browser_service.config import BrowserConfig
 from browser_service.exceptions import BrowserError, BrowserInitializationError, PageCreationError
@@ -24,9 +24,8 @@ class PooledPage:
 class PagePool:
     """页面池管理器，复用页面以提高性能。"""
 
-    def __init__(self, browser: Browser, stealth: Stealth, config: BrowserConfig):
+    def __init__(self, browser: Browser, config: BrowserConfig):
         self._browser = browser
-        self._stealth = stealth
         self._config = config
         self._pool: list[PooledPage] = []
         self._lock = asyncio.Lock()
@@ -34,11 +33,8 @@ class PagePool:
     async def initialize(self):
         """初始化页面池，预先创建指定数量的页面。"""
         for _ in range(self._config.initial_page_count):
-            context = await self._browser.new_context(
-                user_agent=self._config.user_agent,
-            )
+            context = await self._browser.new_context()
             page = await context.new_page()
-            await self._stealth.apply_stealth_async(page)
 
             pooled = PooledPage(
                 page=page,
@@ -58,11 +54,8 @@ class PagePool:
                     return pooled.page
 
             try:
-                context = await self._browser.new_context(
-                    user_agent=self._config.user_agent,
-                )
+                context = await self._browser.new_context()
                 page = await context.new_page()
-                await self._stealth.apply_stealth_async(page)
 
                 pooled = PooledPage(
                     page=page,
@@ -126,7 +119,6 @@ class BrowserService:
         self.config = config or BrowserConfig.from_env()
         self._browser: Browser | None = None
         self._playwright = None
-        self._stealth = Stealth()
         self._page_pool: PagePool | None = None
 
     @property
@@ -143,13 +135,13 @@ class BrowserService:
             from playwright.async_api import async_playwright
 
             self._playwright = await async_playwright().start()
+            await async_apply(self._playwright)
             self._browser = await self._playwright.chromium.launch(
                 headless=self.config.headless,
             )
 
             self._page_pool = PagePool(
                 browser=self._browser,
-                stealth=self._stealth,
                 config=self.config
             )
 

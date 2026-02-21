@@ -14,6 +14,29 @@ from url_fetcher.exceptions import FetchError, URLValidationError, UnsafeURLErro
 # 获取项目根目录（从当前文件路径向上两级）
 READABILITY_JS_PATH = Path(__file__).parent.parent / "res" / "Readability.js"
 
+# 模块级缓存，只加载一次 Readability.js
+_readability_js_cache: Optional[str] = None
+
+
+def _load_readability_js() -> str:
+    """加载 Readability.js 脚本（使用模块级缓存）。
+
+    Returns:
+        Readability.js 脚本内容
+
+    Raises:
+        FetchError: 文件不存在时抛出
+    """
+    global _readability_js_cache
+
+    if _readability_js_cache is None:
+        if not READABILITY_JS_PATH.exists():
+            raise FetchError(f"Readability.js 不存在: {READABILITY_JS_PATH}")
+        with open(READABILITY_JS_PATH, "r", encoding="utf-8") as f:
+            _readability_js_cache = f.read()
+
+    return _readability_js_cache
+
 
 def _is_safe_url(url: str) -> bool:
     """验证 URL 是否安全（防止 SSRF 攻击）。
@@ -57,11 +80,8 @@ class WebClient:
     def __init__(self, config: Optional[FetcherConfig] = None, *, browser_service: BrowserService):
         self.config = config or FetcherConfig()
         self._browser_service = browser_service
-
-        if not READABILITY_JS_PATH.exists():
-            raise FetchError(f"Readability.js 不存在: {READABILITY_JS_PATH}")
-        with open(READABILITY_JS_PATH, "r", encoding="utf-8") as f:
-            self._readability_js = f.read()
+        # 延迟加载，只在使用时才加载 JS
+        self._readability_js: Optional[str] = None
 
     async def fetch(self, url: str, timeout: int) -> dict:
         """获取网页的文章内容（使用 Readability.js）。
@@ -75,6 +95,10 @@ class WebClient:
             - byline: 作者
             - length: 长度
         """
+        # 延迟加载 Readability.js（使用模块级缓存）
+        if self._readability_js is None:
+            self._readability_js = _load_readability_js()
+
         # 验证 URL 安全性
         if not _is_safe_url(url):
             if not url.startswith(("http://", "https://")):
@@ -85,11 +109,11 @@ class WebClient:
         try:
             page = await self._browser_service.create_page()
 
-            # 导航到页面
+            # 导航到页面,等待网络空闲(处理自动跳转)
             await page.goto(
                 url,
                 timeout=timeout * 1000,
-                wait_until="domcontentloaded"
+                wait_until="networkidle"
             )
 
             # 注入 Readability.js

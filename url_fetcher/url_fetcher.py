@@ -122,18 +122,3 @@ async def url_fetcher(
         error_msg = f"{type(e).__name__}: {e!s}"
         logger.info(f"RESPONSE - FAILED - url={url}, error={error_msg}")
         return create_url_fetcher_result(False, url, error=error_msg)
-
-
-async def test_url_fetcher():
-    from browser_service import initialize_global_browser, close_global_browser
-
-    await initialize_global_browser()
-    result = await url_fetcher("https://zhuanlan.zhihu.com/p/359975221")
-    await close_global_browser()
-    print(result)
-
-
-if __name__ == '__main__':
-    import asyncio
-
-    asyncio.run(test_url_fetcher())

@@ -22,7 +22,7 @@ MCP 服务器，提供Web搜索，URL获取等功能
 - types-beautifulsoup4 >= 4.12.0.20250516（类型提示）
 - python-dotenv >= 1.0.0（环境变量管理）
 - playwright >= 1.58.0（浏览器自动化）
-- playwright-stealth >= 2.0.2（反爬虫检测绕过）
+- playwright-stealth-plugin >= 2.5.0（反爬虫检测绕过）
 
 ## 专项说明文档
 

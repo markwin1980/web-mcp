@@ -2,11 +2,15 @@
 
 from contextlib import asynccontextmanager
 
+from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
 
 from browser_service import initialize_global_browser, close_global_browser
 from url_fetcher import url_fetcher
 from web_search import web_search
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
 
 
 @asynccontextmanager

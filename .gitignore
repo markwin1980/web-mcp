@@ -41,4 +41,8 @@ Thumbs.db
 # Claude
 .claude/
 
+# Logs
 log/
+
+# Development
+test.py

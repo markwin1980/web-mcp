@@ -69,7 +69,7 @@ web-mcp/
 |----------------------|---------------------------|
 | `__init__.py`        | 模块导出，提供公共 API             |
 | `browser_service.py` | 浏览器和页面池管理（BrowserService） |
-| `config.py`          | BrowserConfig 浏览器配置类    |
+| `config.py`          | BrowserConfig 浏览器配置类      |
 | `exceptions.py`      | 浏览器相关异常类定义                |
 
 ### URL-Fetcher 模块 (`url_fetcher/`)
@@ -77,7 +77,7 @@ web-mcp/
 | 文件               | 说明                   |
 |------------------|----------------------|
 | `__init__.py`    | 模块导出，提供公共 API        |
-| `config.py`      | FetcherConfig 配置类        |
+| `config.py`      | FetcherConfig 配置类    |
 | `exceptions.py`  | 自定义异常类定义             |
 | `html_parser.py` | HTML 解析、内容提取和格式转换    |
 | `url_fetcher.py` | URL-Fetcher MCP 工具实现 |
@@ -85,13 +85,13 @@ web-mcp/
 
 ### Web-Search 模块 (`web_search/`)
 
-| 文件              | 说明                        |
-|-----------------|---------------------------|
-| `__init__.py`   | 模块导出，提供公共 API             |
+| 文件               | 说明                        |
+|------------------|---------------------------|
+| `__init__.py`    | 模块导出，提供公共 API             |
 | `bing_client.py` | Bing 搜索客户端（使用 Playwright） |
-| `config.py`     | BingSearchConfig 搜索配置类               |
-| `exceptions.py` | 自定义异常类定义                  |
-| `web_search.py` | Web-Search MCP 工具实现       |
+| `config.py`      | BingSearchConfig 搜索配置类    |
+| `exceptions.py`  | 自定义异常类定义                  |
+| `web_search.py`  | Web-Search MCP 工具实现       |
 
 ### 测试 (`tests/`)
 
