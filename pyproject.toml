@@ -1,7 +1,7 @@
 [project]
 name = "web-mcp"
 version = "0.1.0"
-description = "Model Context Protocol server for reading web pages and converting to Markdown"
+description = ""
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

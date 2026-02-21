@@ -24,10 +24,7 @@ uv run pytest tests/test_url_fetcher.py
 uv run pytest tests/test_web_search.py::test_call_web_search
 
 # 查看测试覆盖率
-uv run pytest --cov=url_fetcher --cov=web_search --cov=main
-
-# 生成覆盖率 HTML 报告
-uv run pytest --cov=url_fetcher --cov=web_search --cov=main --cov-report=html
+uv run pytest --cov=url_fetcher --cov=web_search --cov-report=html
 ```
 
 ## 测试文件说明
@@ -35,14 +32,6 @@ uv run pytest --cov=url_fetcher --cov=web_search --cov=main --cov-report=html
 ### `conftest.py` - Pytest 配置和共享 Fixtures
 
 提供测试所需的共享 fixtures 和工具类：
-
-### 单元测试 Fixtures
-
-- `config` - 测试配置实例
-- `fetcher` - 网页获取器实例
-- `parser` - HTML 解析器实例
-- `sample_html` - 完整的示例 HTML 文档（用于测试文章解析）
-- `sample_html_simple` - 简单的示例 HTML 文档（用于基础测试）
 
 ### 集成测试 Fixtures
 
@@ -75,12 +64,15 @@ uv run pytest --cov=url_fetcher --cov=web_search --cov=main --cov-report=html
 
 测试 web_search 工具的功能和参数处理：
 
-- `test_web_search_tool_schema` - 验证工具的输入 schema（query、num_results、language）
+- `test_web_search_tool_schema` - 验证工具的输入 schema
 - `test_call_web_search` - 测试基本搜索功能
 - `test_call_web_search_invalid_params` - 测试无效参数处理（num_results 超出范围）
 - `test_web_search_default_params` - 测试默认参数使用
-- `test_web_search_empty_query` - 测试空查询字符串处理
 - `test_web_search_minimum_results` - 测试返回最小数量结果（num_results=1）
+- `test_web_search_empty_query` - 测试空查询字符串处理
+- `test_web_search_too_long_query` - 测试超长查询字符串处理
+- `test_web_search_query_with_control_chars` - 测试控制字符过滤
+- `test_web_search_query_at_max_length` - 测试边界值（500字符）
 
 **测试方式**: 通过 MCP 客户端调用工具，验证返回的 JSON 结果格式和内容
 
@@ -88,44 +80,18 @@ uv run pytest --cov=url_fetcher --cov=web_search --cov=main --cov-report=html
 
 测试 url_fetcher 工具的功能和参数处理：
 
-- `test_url_fetcher_tool_schema` - 验证工具的输入 schema（url、return_format、retain_images、timeout、no_cache）
-- `test_call_url_fetcher_with_public_site` - 测试基本网页读取功能（使用 example.com）
+- `test_url_fetcher_tool_schema` - 验证工具的输入 schema
+- `test_call_url_fetcher_with_public_site` - 测试基本网页读取功能（使用 TEST_URL）
 - `test_call_url_fetcher_invalid_url` - 测试无效 URL 处理
 - `test_url_fetcher_invalid_timeout` - 测试无效超时参数处理
 - `test_url_fetcher_text_format` - 测试纯文本格式输出
+- `test_url_fetcher_markdown_format` - 测试 Markdown 格式输出
 - `test_url_fetcher_with_images` - 测试保留图片选项
+- `test_url_fetcher_cache_functionality` - 测试缓存功能
 - `test_url_fetcher_no_cache` - 测试禁用缓存选项
 - `test_url_fetcher_default_params` - 测试默认参数使用
+- `test_url_fetcher_content_structure` - 测试返回内容的结构完整性
 
 **测试方式**: 通过 MCP 客户端调用工具，验证返回的 JSON 结果格式和内容
 
-### `test_fetcher.py` - 网页获取器单元测试
-
-测试 WebFetcher 组件的功能：
-
-- `test_validate_url_success` - 测试有效 URL 验证（http/https）
-- `test_validate_url_failure` - 测试无效 URL 被拒绝
-- `test_cache_store_and_retrieve` - 测试缓存存储和检索
-- `test_cache_expiration` - 测试缓存过期机制
-- `test_clear_cache` - 测试清空缓存
-- `test_fetch_invalid_url` - 测试使用无效 URL 获取时抛出异常
-- `test_fetch_with_cache` - 测试缓存功能
-
-**测试方式**: 直接实例化 WebFetcher 类进行单元测试
-
-### `test_parser.py` - HTML 解析器单元测试
-
-测试 HTMLParser 组件的功能：
-
-- `test_extract_title` - 测试从文章 JSON 中提取标题
-- `test_extract_title_from_h1` - 测试从 h1 标签提取标题
-- `test_extract_summary_from_meta` - 测试从 meta description 提取摘要
-- `test_extract_summary_from_first_p` - 测试从第一段提取摘要
-- `test_truncate_summary` - 测试摘要截断功能
-- `test_html_to_markdown` - 测试 HTML 转 Markdown
-- `test_html_to_text` - 测试 HTML 转纯文本
-- `test_extract_metadata` - 测试元数据提取（作者、发布日期、字数等）
-- `test_parse_full` - 测试完整解析流程（markdown 格式）
-- `test_parse_with_text_format` - 测试使用 text 格式解析
-
-**测试方式**: 直接实例化 HTMLParser 类进行单元测试
+**注意**: 测试使用 `TEST_URL` 常量配置测试网站（默认为 cnblogs.com），可在 `test_url_fetcher.py` 顶部修改

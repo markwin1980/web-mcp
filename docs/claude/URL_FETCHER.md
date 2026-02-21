@@ -22,7 +22,9 @@ URL-Fetcher 模块负责读取网页内容，提取主要文本并转换为 Mark
 
 ### HTMLParser (`parser.py`)
 
-- 使用 readabilipy 提取网页主要内容
+- 使用 **readabilipy** 提取网页主要内容
+  - 默认使用 Mozilla 的 Readability.js 算法（需要 Node.js 14+）
+  - Node.js 不可用时自动降级到纯 Python 提取模式
 - 使用 BeautifulSoup 解析 HTML
 - 使用 markdownify 转换为 Markdown
 - 提取标题、摘要、内容和元数据

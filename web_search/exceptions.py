@@ -7,12 +7,6 @@ class BingSearchError(Exception):
     pass
 
 
-class PlaywrightError(BingSearchError):
-    """Playwright 相关错误。"""
-
-    pass
-
-
 class PageLoadError(BingSearchError):
     """页面加载错误。"""
 
