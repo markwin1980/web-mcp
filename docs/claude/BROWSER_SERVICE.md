@@ -68,4 +68,5 @@ release_page() → 标记页面为空闲 → 更新使用时间 → 检查是否
 |------------------------------|-----------|
 | `BrowserInitializationError` | 浏览器初始化失败  |
 | `PageCreationError`          | 创建页面失败    |
+| `PageClosedError`            | 页面已关闭     |
 | `BrowserError`               | 其他浏览器相关错误 |

@@ -18,7 +18,6 @@ MCP 服务器，提供Web搜索，URL获取等功能
 - **依赖管理**: uv
 - aiohttp >= 3.9.0（异步 HTTP 客户端）
 - markdownify >= 0.13.1（HTML 转 Markdown）
-- readabilipy >= 0.2.0（内容提取）
 - beautifulsoup4 >= 4.12.0（HTML 解析）
 - mcp >= 1.26.0（MCP 协议支持）
 - types-beautifulsoup4 >= 4.12.0.20250516（类型提示）
@@ -38,4 +37,3 @@ MCP 服务器，提供Web搜索，URL获取等功能
 | [BROWSER_SERVICE.md](docs/claude/BROWSER_SERVICE.md) | 处理browser_service相关问题时 |
 | [URL_FETCHER.md](docs/claude/URL_FETCHER.md)         | 处理url_fetcher相关问题时     |
 | [WEB_SEARCH.md](docs/claude/WEB_SEARCH.md)           | 处理web_search相关问题时      |
-

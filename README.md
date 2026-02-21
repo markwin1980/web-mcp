@@ -6,11 +6,11 @@
 
 ### Web 读取
 
-- **智能内容提取**：使用 Mozilla Readability.js 算法提取网页正文内容（需 Node.js，无 Node.js 时自动降级到纯 Python 模式）
+- **智能内容提取**：使用 Mozilla Readability.js 算法提取网页正文内容
 - **Markdown 转换**：将 HTML 自动转换为格式化的 Markdown
 - **智能摘要**：自动提取页面描述或生成摘要
-- **元数据提取**：提取标题、作者、发布日期、Open Graph 信息等
-- **内存缓存**：内置缓存机制，避免重复请求
+- **元数据提取**：提取标题、作者、字数统计、站点名称等
+- **Playwright 浏览器**：使用真实浏览器加载网页，兼容性更好
 - **国际化支持**：完整支持中英文内容
 
 ### Web 搜索
@@ -32,12 +32,10 @@ uv sync
 
 - **系统要求**：
   - Python >= 3.11
-  - Node.js >= 14（用于 Readability.js 内容提取）
 
 - **Python 依赖**：
   - aiohttp >= 3.9.0
   - markdownify >= 0.13.1
-  - readabilipy >= 0.2.0
   - beautifulsoup4 >= 4.12.0
   - mcp >= 1.26.0
   - types-beautifulsoup4 >= 4.12.0.20250516
@@ -48,11 +46,8 @@ uv sync
 **首次使用需要安装以下组件**：
 
 ```bash
-# 安装 Playwright 浏览器（用于 Web 搜索）
+# 安装 Playwright 浏览器（用于 Web 搜索和 Web 读取）
 uv run playwright install chromium
-
-# 安装 Node.js 后，readabilipy 会自动安装 Readability.js
-# 如果 Node.js 不可用，url_fetcher 将使用纯 Python 提取模式（提取质量可能较低）
 ```
 
 ## 使用方法
@@ -98,7 +93,7 @@ web-mcp 提供以下两个工具：
 
 读取网页并转换为 Markdown 或纯文本格式。
 
-使用 **ReadabiliPy** 进行智能内容提取，默认使用 Mozilla 的 Readability.js 算法（需要 Node.js）。如果 Node.js 不可用，会自动降级到纯 Python 提取模式。
+使用 **Playwright + Readability.js** 进行智能内容提取。
 
 | 参数              | 类型      | 必填 | 默认值        | 描述                                    |
 |-----------------|---------|----|------------|---------------------------------------|
@@ -106,11 +101,11 @@ web-mcp 提供以下两个工具：
 | `return_format` | string  | ❌  | `markdown` | 返回格式：`markdown` 或 `text`              |
 | `retain_images` | boolean | ❌  | `true`     | 是否在输出中保留图片                            |
 | `timeout`       | integer | ❌  | `20`       | 请求超时时间（秒），范围 5-60                     |
-| `no_cache`      | boolean | ❌  | `false`    | 是否禁用缓存                                |
+| `no_cache`      | boolean | ❌  | `false`    | 是否禁用缓存（保留参数，当前暂未实现）                |
 
 **关于内容提取**：
-- **Readability.js 模式**（需要 Node.js）：Mozilla 官方算法，提取准确率高，能更好地处理复杂网页结构
-- **纯 Python 模式**（无需 Node.js）：简化版提取算法，提取质量可能略低，但依赖更少
+- 使用 Mozilla Readability.js 算法，提取准确率高，能更好地处理复杂网页结构
+- Readability.js 脚本位置：`res/Readability.js`
 
 ### 使用示例
 
@@ -167,12 +162,7 @@ MCP 客户端会自动调用 `url_fetcher` 工具并返回网页内容。
   "content": "# 文章标题\n\n正文内容...",
   "metadata": {
     "author": "作者名称",
-    "publish_date": "2024-01-15T10:30:00Z",
     "word_count": 1234,
-    "image_count": 5,
-    "og_title": "Open Graph 标题",
-    "og_description": "Open Graph 描述",
-    "og_image": "https://example.com/image.jpg",
     "site_name": "网站名称"
   }
 }
@@ -202,4 +192,3 @@ uv run pytest
 # 运行测试并查看覆盖率
 uv run pytest --cov=url_fetcher --cov=web_search --cov-report=html
 ```
-

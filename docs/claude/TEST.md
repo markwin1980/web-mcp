@@ -7,6 +7,9 @@
 本项目使用 pytest 进行单元测试和集成测试。
 
 ```bash
+# 安装开发依赖(如果报错不存在pytest)
+uv sync --extra dev
+
 # 使用 uv 运行所有测试
 uv run pytest
 
@@ -14,8 +17,7 @@ uv run pytest
 uv run pytest -v
 
 # 运行特定测试文件
-uv run pytest tests/test_fetcher.py
-uv run pytest tests/test_parser.py
+uv run pytest tests/test_browser_service.py
 uv run pytest tests/test_mcp_server.py
 uv run pytest tests/test_web_search.py
 uv run pytest tests/test_url_fetcher.py
@@ -60,6 +62,17 @@ uv run pytest --cov=url_fetcher --cov=web_search --cov-report=html
 
 **测试方式**: 通过 stdio 启动真实的 MCP 服务器进程，使用 JSON-RPC 协议进行通信
 
+### `test_browser_service.py` - Browser-Service 单元测试
+
+测试浏览器服务模块的功能：
+
+- 测试 BrowserService 的初始化和关闭
+- 测试页面池管理功能
+- 测试页面创建和释放
+- 测试异常处理
+
+**测试方式**: 单元测试，直接调用 BrowserService 类的方法
+
 ### `test_web_search.py` - Web-Search 工具测试
 
 测试 web_search 工具的功能和参数处理：
@@ -95,3 +108,4 @@ uv run pytest --cov=url_fetcher --cov=web_search --cov-report=html
 **测试方式**: 通过 MCP 客户端调用工具，验证返回的 JSON 结果格式和内容
 
 **注意**: 测试使用 `TEST_URL` 常量配置测试网站（默认为 cnblogs.com），可在 `test_url_fetcher.py` 顶部修改
+
