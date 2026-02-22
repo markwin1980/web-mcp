@@ -9,6 +9,7 @@ from fastmcp import FastMCP
 from browser_service import initialize_global_browser, close_global_browser
 from url_fetcher import url_fetcher
 from web_search import web_search
+from web_dev import web_dev
 
 # 加载 .env 文件中的环境变量
 load_dotenv()
@@ -38,6 +39,9 @@ mcp.tool()(web_search)
 
 # 将 url_fetcher 函数注册为 MCP 工具
 mcp.tool()(url_fetcher)
+
+# 将 web_dev 函数注册为 MCP 工具
+mcp.tool()(web_dev)
 
 if __name__ == "__main__":
     mcp.run(transport="http", port=PORT)

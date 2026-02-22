@@ -37,7 +37,7 @@ async def test_list_tools(mcp_client):
     tools = await mcp_client.list_tools()
 
     # 验证工具数量
-    assert len(tools) == 2, f"期望 2 个工具，实际返回 {len(tools)} 个"
+    assert len(tools) == 3, f"期望 3 个工具，实际返回 {len(tools)} 个"
 
     # 获取工具名称
     tool_names = [tool.name for tool in tools]
@@ -45,6 +45,7 @@ async def test_list_tools(mcp_client):
     # 验证工具名称
     assert "web_search" in tool_names, "缺少 web_search 工具"
     assert "url_fetcher" in tool_names, "缺少 url_fetcher 工具"
+    assert "web_dev" in tool_names, "缺少 web_dev 工具"
 
 
 @pytest.mark.asyncio

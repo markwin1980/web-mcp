@@ -30,6 +30,7 @@ web-mcp/
 │       ├── BROWSER_SERVICE.md # 浏览器服务模块说明
 │       ├── MCP_SERVER.md # MCP 服务器说明
 │       ├── URL_FETCHER.md # URL-Fetcher 模块说明
+│       ├── WEB_DEV.md    # Web-Dev 模块说明
 │       └── WEB_SEARCH.md # Web-Search 模块说明
 ├── res/                   # 资源文件
 │   └── Readability.js    # Mozilla Readability.js 脚本
@@ -46,6 +47,14 @@ web-mcp/
 │   ├── html_parser.py    # HTML 解析、内容提取和格式转换
 │   ├── url_fetcher.py    # URL-Fetcher MCP 工具实现
 │   └── web_client.py     # Playwright 网页获取客户端
+├── web_dev/               # Web-Dev 功能模块（网页开发调试）
+│   ├── __init__.py       # 模块导出，提供公共 API
+│   ├── config.py         # WebDevConfig 配置类
+│   ├── console_handler.py # Console 日志处理器
+│   ├── dev_session.py    # 单个调试会话封装
+│   ├── exceptions.py     # 自定义异常类定义
+│   ├── session_manager.py # 会话管理器（全局单例）
+│   └── web_dev.py        # Web-Dev MCP 工具实现
 ├── web_search/            # Web-Search 功能模块
 │   ├── __init__.py       # 模块导出，提供公共 API
 │   ├── bing_client.py    # Bing 搜索客户端（使用 Playwright）

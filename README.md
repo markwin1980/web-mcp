@@ -1,8 +1,19 @@
 # Web-MCP Server
 
-一个 Model Context Protocol (MCP) 服务器，提供 Web 搜索和 Web 读取功能。
+一个 Model Context Protocol (MCP) 服务器，提供 Web 搜索、Web 读取和网页开发调试功能。
 
 ## 功能特性
+
+### Web 开发调试 (Web-Dev)
+
+- **会话管理**：创建/关闭/列出多个调试会话，支持并发调试
+- **网页操作**：导航、点击、输入、下拉选择、勾选、鼠标悬停、拖放等
+- **键盘/鼠标操作**：按键输入、页面滚动、键盘和鼠标直接控制
+- **元素查询**：获取元素信息（位置、大小、CSS样式、属性等）、搜索元素
+- **Console 日志**：实时捕获 console 日志和 JavaScript 异常
+- **截图功能**：页面截图、元素截图，支持全页截图和指定元素截图
+- **JavaScript 执行**：直接在页面执行 JavaScript 代码
+- **智能等待**：等待元素出现、等待页面加载状态
 
 ### Web 读取
 
@@ -127,9 +138,32 @@ uv run mcp_http.py
 
 ### 可用工具
 
-web-mcp 提供以下两个工具：
+web-mcp 提供以下三个工具：
 
-#### 1. web_search
+#### 1. web_dev
+
+网页开发调试工具 - 单一综合入口，通过 `action` 参数区分不同操作。
+
+| 参数           | 类型      | 必填 | 默认值   | 描述                 |
+|--------------|---------|----|-------|--------------------|
+| `action`     | string  | ✅  | -     | 操作类型，见下方支持的 action 列表 |
+| `session_id` | string  | ❌  | -     | 会话 ID（除 create_session 外都需要） |
+| `**kwargs`   | any     | ❌  | -     | 具体操作的参数          |
+
+**支持的 Action**：
+
+- **会话管理**：`create_session`, `close_session`, `list_sessions`
+- **导航操作**：`navigate`, `go_back`, `go_forward`, `reload`
+- **元素操作**：`click`, `fill`, `type_text`, `clear`, `select_option`, `check`, `uncheck`, `hover`, `drag_and_drop`, `focus`
+- **键盘鼠标**：`press_key`, `scroll`
+- **查询操作**：`get_element_info`, `get_page_info`, `search_elements`
+- **Console 日志**：`get_console_logs`, `clear_console_logs`
+- **截图**：`screenshot`
+- **JavaScript**：`evaluate`, `wait_for_selector`, `wait_for_load_state`
+
+详细使用说明请参考 `docs/module/WEB_DEV.md`。
+
+#### 2. web_search
 
 执行 Web 搜索并返回结果。
 
@@ -140,7 +174,7 @@ web-mcp 提供以下两个工具：
 | `query`       | string | ✅  | -    | 搜索关键词          |
 | `num_results` | int    | ❌  | `10` | 返回结果数量，范围 1-50 |
 
-#### 2. url_fetcher
+#### 3. url_fetcher
 
 读取网页并转换为 Markdown 或纯文本格式。
 
