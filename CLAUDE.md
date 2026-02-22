@@ -6,9 +6,9 @@
 
 ## 项目概述
 
-MCP 服务器，提供Web搜索，URL获取等功能
+MCP 服务器，提供Web搜索，URL获取，网页开发调试等功能
 
-**核心架构**：`browser_service`（浏览器池）→ `url_fetcher`/`web_search`（功能模块）→ `mcp_stdio.py`（MCP入口）
+**核心架构**：`browser_service`（浏览器池）→ `url_fetcher`/`web_search`/`web_dev`（功能模块）→ `mcp_stdio.py`（MCP入口）
 
 ## 开发说明
 
@@ -43,5 +43,6 @@ MCP 服务器，提供Web搜索，URL获取等功能
 | [BROWSER_SERVICE.md](docs/module/BROWSER_SERVICE.md) | 处理browser_service相关问题时 | `browser_service/` 下所有文件      |
 | [URL_FETCHER.md](docs/module/URL_FETCHER.md)         | 处理url_fetcher相关问题时     | `url_fetcher/` 下所有文件          |
 | [WEB_SEARCH.md](docs/module/WEB_SEARCH.md)           | 处理web_search相关问题时      | `web_search/` 下所有文件           |
+| [WEB_DEV.md](docs/module/WEB_DEV.md)                 | 处理web_dev相关问题时         | `web_dev/` 下所有文件              |
 | [README.md](README.md)                               | 无（用户文档，无需读取）           | 功能增减、API 变更、配置方式变化            |
 | [.env.example](.env.example)                         | 无（范例文件，无需读取）           | 环境变量新增/删除/默认值变更               |
