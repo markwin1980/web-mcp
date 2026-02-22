@@ -20,11 +20,13 @@ web-mcp/
 │   ├── config.py         # BrowserConfig 浏览器配置类（支持环境变量）
 │   └── exceptions.py     # 浏览器相关异常类定义
 ├── docs/                  # 项目文档
-│   └── claude/           # AI 助手专项说明文档
+│   ├── claude/           # AI 助手专项说明文档
+│   │   ├── GIT.md        # Git 提交规范
+│   │   ├── STRUCT.md     # 项目目录结构（本文件）
+│   │   └── TEST.md       # 测试运行说明
+│   └── module/           # 模块详细说明文档
 │       ├── BROWSER_SERVICE.md # 浏览器服务模块说明
 │       ├── MCP_SERVER.md # MCP 服务器说明
-│       ├── STRUCT.md     # 项目目录结构（本文件）
-│       ├── TEST.md       # 测试运行说明
 │       ├── URL_FETCHER.md # URL-Fetcher 模块说明
 │       └── WEB_SEARCH.md # Web-Search 模块说明
 ├── res/                   # 资源文件

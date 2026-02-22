@@ -19,9 +19,8 @@ MCP 服务器，提供Web搜索，URL获取等功能
 | [STRUCT.md](docs/claude/STRUCT.md)                   | 需要查询项目目录结构时            | 所有新增/删除的文件或目录结构变化                              |
 | [TEST.md](docs/claude/TEST.md)                       | 需要对脚本进行运行测试时           | `tests/` 下所有文件                                 |
 | [GIT.md](docs/claude/GIT.md)                         | 需要查看 Git 提交规范时         | 无（规范变更除外）                                      |
-| [MCP_SERVER.md](docs/claude/MCP_SERVER.md)           | 处理mcp服务器相关问题时          | `mcp_stdio.py`, `mcp_sse.py`, 各模块的 `config.py` |
-| [BROWSER_SERVICE.md](docs/claude/BROWSER_SERVICE.md) | 处理browser_service相关问题时 | `browser_service/` 下所有文件                       |
-| [URL_FETCHER.md](docs/claude/URL_FETCHER.md)         | 处理url_fetcher相关问题时     | `url_fetcher/` 下所有文件                           |
-| [WEB_SEARCH.md](docs/claude/WEB_SEARCH.md)           | 处理web_search相关问题时      | `web_search/` 下所有文件                            |
+| [MCP_SERVER.md](docs/module/MCP_SERVER.md)           | 处理mcp服务器相关问题时          | `mcp_stdio.py`, `mcp_sse.py`, 各模块的 `config.py` |
+| [BROWSER_SERVICE.md](docs/module/BROWSER_SERVICE.md) | 处理browser_service相关问题时 | `browser_service/` 下所有文件                       |
+| [URL_FETCHER.md](docs/module/URL_FETCHER.md)         | 处理url_fetcher相关问题时     | `url_fetcher/` 下所有文件                           |
+| [WEB_SEARCH.md](docs/module/WEB_SEARCH.md)           | 处理web_search相关问题时      | `web_search/` 下所有文件                            |
 | [README.md](README.md)                               | 无（用户文档，无需读取）           | 功能增减、API 变更、配置方式变化                             |
-
