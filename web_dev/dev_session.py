@@ -1,10 +1,9 @@
 """调试会话 - 封装单个浏览器页面的调试会话。"""
 
-import base64
 from dataclasses import dataclass
 from typing import Any
 
-from playwright.async_api import Page, Keyboard, Mouse
+from playwright.async_api import Page
 
 from web_dev.console_handler import ConsoleHandler
 
@@ -69,7 +68,6 @@ class DevSession:
             msg_type = message.type
             text = message.text
             location = message.location.get("url", "") if message.location else None
-            stack = None
 
             # 获取消息参数
             args = []
@@ -122,18 +120,6 @@ class DevSession:
         """
         await self._page.goto(url, timeout=timeout, wait_until="networkidle")
 
-    async def go_back(self) -> None:
-        """后退。"""
-        await self._page.go_back()
-
-    async def go_forward(self) -> None:
-        """前进。"""
-        await self._page.go_forward()
-
-    async def reload(self) -> None:
-        """刷新页面。"""
-        await self._page.reload()
-
     # ========== 元素操作 ==========
 
     async def click(
@@ -168,23 +154,6 @@ class DevSession:
             timeout: 超时时间（毫秒）
         """
         await self._page.fill(selector, value, timeout=timeout)
-
-    async def type_text(
-            self,
-            selector: str,
-            text: str,
-            delay: float = 0,
-            timeout: float = 30000,
-    ) -> None:
-        """逐个字符输入文本。
-
-        Args:
-            selector: 输入框选择器
-            text: 要输入的文本
-            delay: 每个字符输入的延迟（毫秒）
-            timeout: 超时时间（毫秒）
-        """
-        await self._page.type(selector, text, delay=delay, timeout=timeout)
 
     async def clear(self, selector: str, timeout: float = 30000) -> None:
         """清空输入框。
@@ -263,26 +232,7 @@ class DevSession:
             timeout=timeout,
         )
 
-    async def focus(self, selector: str, timeout: float = 30000) -> None:
-        """聚焦元素。
-
-        Args:
-            selector: 元素选择器
-            timeout: 超时时间（毫秒）
-        """
-        await self._page.focus(selector, timeout=timeout)
-
     # ========== 键盘和鼠标操作 ==========
-
-    @property
-    def keyboard(self) -> Keyboard:
-        """获取键盘操作对象。"""
-        return self._page.keyboard
-
-    @property
-    def mouse(self) -> Mouse:
-        """获取鼠标操作对象。"""
-        return self._page.mouse
 
     async def press_key(
             self,
@@ -475,62 +425,7 @@ class DevSession:
         except Exception:
             return []
 
-    # ========== 截图操作 ==========
-
-    async def screenshot(
-            self,
-            full_page: bool = False,
-            selector: str | None = None,
-            scale: float = 1.0,
-            quality: int | None = None,
-            timeout: float = 30000,
-    ) -> str:
-        """截图并返回 base64 编码的图片数据。
-
-        Args:
-            full_page: 是否截取整个页面
-            selector: 元素选择器（如果指定则只截取该元素）
-            scale: 缩放比例
-            quality: 图片质量（0-100，仅对 JPEG 有效）
-            timeout: 超时时间（毫秒）
-
-        Returns:
-            base64 编码的图片数据（带 data URL 前缀）
-        """
-        screenshot_kwargs = {
-            "full_page": full_page,
-            "scale": scale,
-            "timeout": timeout,
-        }
-
-        if quality:
-            screenshot_kwargs["quality"] = quality
-
-        if selector:
-            element = await self._page.wait_for_selector(selector, timeout=timeout)
-            if not element:
-                raise ValueError(f"Element not found: {selector}")
-            screenshot_bytes = await element.screenshot(**screenshot_kwargs)
-        else:
-            screenshot_bytes = await self._page.screenshot(**screenshot_kwargs)
-
-        # 转换为 base64
-        base64_data = base64.b64encode(screenshot_bytes).decode("utf-8")
-        return f"data:image/png;base64,{base64_data}"
-
     # ========== JavaScript 执行 ==========
-
-    async def evaluate(self, expression: str, **kwargs: Any) -> Any:
-        """执行 JavaScript 表达式。
-
-        Args:
-            expression: JavaScript 表达式
-            **kwargs: 传递给 JavaScript 的参数
-
-        Returns:
-            执行结果
-        """
-        return await self._page.evaluate(expression, kwargs)
 
     async def wait_for_selector(
             self,
@@ -544,16 +439,3 @@ class DevSession:
             timeout: 超时时间（毫秒）
         """
         await self._page.wait_for_selector(selector, timeout=timeout, state="visible")
-
-    async def wait_for_load_state(
-            self,
-            state: str = "load",
-            timeout: float = 30000,
-    ) -> None:
-        """等待页面加载状态。
-
-        Args:
-            state: 加载状态 ("load", "domcontentloaded", "networkidle")
-            timeout: 超时时间（毫秒）
-        """
-        await self._page.wait_for_load_state(state, timeout=timeout)
