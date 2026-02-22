@@ -39,9 +39,11 @@ cp .env.example .env
 支持的配置项：
 
 - **MCP_SERVER_PORT**: SSE 模式服务器端口（默认：8000）
-- **BROWSER_HEADLESS**: 是否使用无头模式（默认：true）
+- **BROWSER_HEADLESS**: 是否使用无头模式（默认：false）
 - **BROWSER_MAX_CACHED_PAGES**: 最大缓存页面数量（默认：10）
 - **BROWSER_INITIAL_PAGE_COUNT**: 初始页面数量（默认：1）
+- **BROWSER_VIEWPORT_WIDTH**: 浏览器视口宽度（默认：1280）
+- **BROWSER_VIEWPORT_HEIGHT**: 浏览器视口高度（默认：720）
 
 详细配置说明请参考 `.env.example` 文件。
 
@@ -69,31 +71,9 @@ uv run playwright install chromium
 
 ### 配置客户端
 
-Web-MCP 支持两种传输模式：**stdio**（本地使用）和 **SSE**（远程/网络使用）。
+Web-MCP 支持两种传输模式：**HTTP**（推荐，本机使用）和 **stdio**（本地使用）。
 
-#### 方式一：stdio 传输（本地使用）
-
-在 MCP 客户端的配置文件中添加：
-
-```json
-{
-  "mcpServers": {
-    "web-mcp": {
-      "command": "uv",
-      "args": [
-        "run",
-        "--directory",
-        "/path/to/web-mcp",
-        "mcp_stdio.py"
-      ]
-    }
-  }
-}
-```
-
-**注意**: 将 `/path/to/web-mcp` 替换为项目的实际路径。
-
-#### 方式二：HTTP 传输（远程/网络使用）
+#### 方式一：HTTP 传输（推荐，本机使用）
 
 首先启动 HTTP 服务器：
 
@@ -114,6 +94,36 @@ uv run mcp_http.py
   }
 }
 ```
+
+**推荐理由**：
+
+- 可以通过浏览器窗口直观看到搜索和页面加载过程
+- 便于调试和排查问题
+- 配置简单，无需路径配置
+- 多开窗口可以共用一个浏览器实例，避免重复加载
+- 无头模式容易被网站屏蔽
+
+#### 方式二：stdio 传输（本地使用）
+
+在 MCP 客户端的配置文件中添加：
+
+```json
+{
+  "mcpServers": {
+    "web-mcp": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/path/to/web-mcp",
+        "mcp_stdio.py"
+      ]
+    }
+  }
+}
+```
+
+**注意**: 将 `/path/to/web-mcp` 替换为项目的实际路径。
 
 ### 可用工具
 

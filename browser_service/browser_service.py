@@ -169,7 +169,7 @@ class BrowserService:
 
             self._context = await self._browser.new_context(
                 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
-                viewport=ViewportSize(width=1280, height=720),
+                viewport=ViewportSize(width=self.config.viewport_width, height=self.config.viewport_height),
                 device_scale_factor=1,
                 is_mobile=False,
                 has_touch=False,
