@@ -53,9 +53,10 @@ web-mcp/
 
 ### 主入口
 
-| 文件             | 说明                       |
-|----------------|--------------------------|
-| `mcp_stdio.py` | MCP 服务器入口（stdio 传输，本地使用） |
+| 文件             | 说明                        |
+|----------------|---------------------------|
+| `mcp_stdio.py` | MCP 服务器入口（stdio 传输，本地使用）  |
+| `mcp_sse.py`   | MCP 服务器入口（SSE 传输，远程/网络使用） |
 
 ### 资源文件 (`res/`)
 
@@ -65,12 +66,12 @@ web-mcp/
 
 ### Browser-Service 模块 (`browser_service/`)
 
-| 文件                   | 说明                        |
-|----------------------|---------------------------|
-| `__init__.py`        | 模块导出，提供公共 API             |
-| `browser_service.py` | 浏览器和页面池管理（BrowserService） |
-| `config.py`          | BrowserConfig 浏览器配置类      |
-| `exceptions.py`      | 浏览器相关异常类定义                |
+| 文件                   | 说明                           |
+|----------------------|------------------------------|
+| `__init__.py`        | 模块导出，提供公共 API                |
+| `browser_service.py` | 浏览器和页面池管理（BrowserService）    |
+| `config.py`          | BrowserConfig 浏览器配置类（支持环境变量） |
+| `exceptions.py`      | 浏览器相关异常类定义                   |
 
 ### URL-Fetcher 模块 (`url_fetcher/`)
 

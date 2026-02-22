@@ -53,6 +53,10 @@ uv run playwright install chromium
 
 ### 配置客户端
 
+Web-MCP 支持两种传输模式：**stdio**（本地使用）和 **SSE**（远程/网络使用）。
+
+#### 方式一：stdio 传输（本地使用）
+
 在 MCP 客户端的配置文件中添加：
 
 ```json
@@ -66,6 +70,30 @@ uv run playwright install chromium
         "/path/to/web-mcp",
         "mcp_stdio.py"
       ]
+    }
+  }
+}
+```
+
+#### 方式二：SSE 传输（远程/网络使用）
+
+首先启动 SSE 服务器：
+
+```bash
+# 启动 SSE 服务器（默认监听 http://localhost:8000）
+uv run mcp_sse.py
+
+# 或指定端口和主机
+uv run mcp_sse.py --port 3000 --host 0.0.0.0
+```
+
+然后在 MCP 客户端的配置文件中添加：
+
+```json
+{
+  "mcpServers": {
+    "web-mcp": {
+      "url": "http://localhost:8000/sse"
     }
   }
 }
