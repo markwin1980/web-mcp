@@ -30,8 +30,7 @@ async def lifespan(_mcp: FastMCP):
 mcp = FastMCP(
     name="web-mcp",
     instructions="MCP 服务器，提供Web搜索，URL获取等功能",
-    lifespan=lifespan,
-    port=PORT,
+    lifespan=lifespan
 )
 
 # 将 web_search 函数注册为 MCP 工具
@@ -41,4 +40,4 @@ mcp.tool()(web_search)
 mcp.tool()(url_fetcher)
 
 if __name__ == "__main__":
-    mcp.run(transport="sse")
+    mcp.run(transport="http", port=PORT)
