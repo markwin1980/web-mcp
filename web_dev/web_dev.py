@@ -97,17 +97,17 @@ def _parse_action_data(action_data: str | None) -> dict[str, Any]:
 
 async def web_dev(
         action: str,
-        session_id: str | None = None,
-        action_data: str | None = None,
+        session_id: str = None,
+        action_data: str = None,
         delay: int = 1000,
         timeout: int = 30000,
 ) -> str:
     """网页开发调试工具。
 
-    操作流程: create_session(获取session_id) -> 各种操作(带session_id) -> close_session
+    操作流程: create_session(获取session_id) -> 其他action(带session_id) -> close_session
 
     Args:
-        action: 操作类型:
+        action: 操作类型
         session_id: 会话ID（除create_session外都需要）
         action_data: JSON字符串，包含操作参数(根据操作类型不同而不同)
         delay: 执行后等待毫秒数，默认1000（会话操作忽略）
@@ -136,9 +136,8 @@ async def web_dev(
             search_elements: 搜索元素，action_data: {selector}
         - Console日志:
             get_console_logs: 获取日志，action_data可选: {type, limit}
-            clear_console_logs: 清空日志
         - JavaScript:
-            wait_for_selector: 等待元素，action_data: {selector, state="visible"}
+            wait_for_selector: 等待元素，action_data: {selector}
     Returns:
         JSON格式结果 {success, action, session_id, data, error}
     """
@@ -417,23 +416,13 @@ async def web_dev(
                     data={"logs": _serialize_console_logs(logs), "count": len(logs)},
                 )
 
-            elif action == "clear_console_logs":
-                await session.console_handler.clear_logs()
-                logger.info(f"RESPONSE - SUCCESS - action={action}, session_id={session_id}")
-                result = create_web_dev_result(
-                    success=True,
-                    action=action,
-                    session_id=session_id,
-                )
-
             # ========== JavaScript 执行 ==========
 
             elif action == "wait_for_selector":
                 selector = params.get("selector")
                 if not selector:
                     raise InvalidActionError("selector is required for wait_for_selector action")
-                state_val = params.get("state", "visible")
-                await session.wait_for_selector(selector, timeout=timeout, state=state_val)
+                await session.wait_for_selector(selector, timeout=timeout)
                 logger.info(f"RESPONSE - SUCCESS - action={action}, session_id={session_id}, selector={selector}")
                 result = create_web_dev_result(
                     success=True,

@@ -105,13 +105,12 @@ Web-Dev 模块提供网页开发调试工具，支持会话管理、网页操作
 | Action               | 必需参数       | 可选参数        | 说明            |
 |----------------------|------------|-------------|---------------|
 | `get_console_logs`   | session_id | type, limit | 获取 console 日志 |
-| `clear_console_logs` | session_id | -           | 清空 console 日志 |
 
 ### JavaScript 执行和等待
 
-| Action              | 必需参数                 | 可选参数           | 说明     |
-|---------------------|----------------------|----------------|--------|
-| `wait_for_selector` | session_id, selector | timeout, state | 等待元素出现 |
+| Action              | 必需参数                 | 可选参数    | 说明     |
+|---------------------|----------------------|---------|--------|
+| `wait_for_selector` | session_id, selector | timeout | 等待元素出现 |
 
 ## 返回格式
 

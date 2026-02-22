@@ -275,7 +275,7 @@ async def _test_query_operations(mcp_client, session_id: str):
 
 
 async def _test_console_logs(mcp_client, session_id: str):
-    """测试 Console 日志操作：get_console_logs, clear_console_logs。"""
+    """测试 Console 日志操作：get_console_logs。"""
     # 测试 get_console_logs
     result = await mcp_client.call_tool(
         "web_dev",
@@ -289,13 +289,6 @@ async def _test_console_logs(mcp_client, session_id: str):
     assert result_data["success"] is True
     assert "logs" in result_data["data"]
 
-    # 测试 clear_console_logs
-    result = await mcp_client.call_tool(
-        "web_dev",
-        {"action": "clear_console_logs", "session_id": session_id},
-    )
-    assert json.loads(result.content[0].text)["success"] is True
-
 
 async def _test_javascript_operations(mcp_client, session_id: str):
     """测试 JavaScript 操作：wait_for_selector。"""
@@ -305,7 +298,7 @@ async def _test_javascript_operations(mcp_client, session_id: str):
         {
             "action": "wait_for_selector",
             "session_id": session_id,
-            "action_data": json.dumps({"selector": "#page-title", "state": "visible"}),
+            "action_data": json.dumps({"selector": "#page-title"}),
         },
     )
     assert json.loads(result.content[0].text)["success"] is True

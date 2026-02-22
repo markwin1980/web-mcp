@@ -11,7 +11,7 @@
 - **键盘/鼠标操作**：按键输入、页面滚动、键盘和鼠标直接控制
 - **元素查询**：获取元素详细信息（位置、大小、CSS样式、属性、可见性等）、搜索匹配元素
 - **Console 日志**：实时捕获 console 日志（log/info/warn/error）和 JavaScript 异常
-- **等待机制**：`wait_for_selector` 支持等待元素达到指定状态（attached/detached/visible/hidden）
+- **等待机制**：`wait_for_selector` 支持等待元素出现
 
 ### Web 读取
 
@@ -157,7 +157,7 @@ web-mcp 提供以下三个工具：
 - **元素操作**：`click`, `fill`, `clear`, `select_option`, `check`, `uncheck`, `hover`, `drag_and_drop`
 - **键盘鼠标**：`press_key`, `scroll`
 - **查询操作**：`get_element_info`, `get_page_info`, `search_elements`
-- **Console 日志**：`get_console_logs`, `clear_console_logs`
+- **Console 日志**：`get_console_logs`
 - **JavaScript**：`wait_for_selector`
 
 详细使用说明请参考 `docs/module/WEB_DEV.md`。

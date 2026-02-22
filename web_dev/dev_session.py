@@ -536,16 +536,14 @@ class DevSession:
             self,
             selector: str,
             timeout: float = 30000,
-            state: str = "visible",
     ) -> None:
         """等待元素出现。
 
         Args:
             selector: 元素选择器
             timeout: 超时时间（毫秒）
-            state: 等待状态 ("attached", "detached", "visible", "hidden")
         """
-        await self._page.wait_for_selector(selector, timeout=timeout, state=state)
+        await self._page.wait_for_selector(selector, timeout=timeout, state="visible")
 
     async def wait_for_load_state(
             self,
