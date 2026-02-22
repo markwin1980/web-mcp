@@ -2,37 +2,26 @@
 
 ## 内容输出要求
 
-1. 使用中文输出所有回答
-2. 项目目录结构在[STRUCT.md](docs/claude/STRUCT.md), 需要更新目录结构时, 请确保：
-    - 同层级内：目录在前，文件在后
-    - 同类型（目录或文件）：按字母顺序排列
-    - 被[.gitignore](.gitignore)排除的文件和目录不显示
+使用中文输出所有回答
 
 ## 项目概述
 
 MCP 服务器，提供Web搜索，URL获取等功能
 
-## 技术栈
+**核心架构**：`browser_service`（浏览器池）→ `url_fetcher`/`web_search`（功能模块）→ `mcp_stdio.py`（MCP入口）
 
-- **Python 版本**: 3.11+
-- **依赖管理**: uv
-- markdownify >= 0.13.1（HTML 转 Markdown）
-- beautifulsoup4 >= 4.12.0（HTML 解析）
-- mcp >= 1.26.0（MCP 协议支持）
-- types-beautifulsoup4 >= 4.12.0.20250516（类型提示）
-- python-dotenv >= 1.0.0（环境变量管理）
-- playwright >= 1.58.0（浏览器自动化）
-- playwright-stealth-plugin >= 2.5.0（反爬虫检测绕过）
+## 文档说明
 
-## 专项说明文档
+如需获取具体项目信息，或对项目文件进行了增删改等操作，参照下表来读取/修改文档。
 
-只读取下面列出的文档，其他的markdown文档是给用户参考的，不要读取
+| 说明文档                                                 | 读取条件                   | 修改条件（影响的文件）                                    |
+|------------------------------------------------------|------------------------|------------------------------------------------|
+| [STRUCT.md](docs/claude/STRUCT.md)                   | 需要查询项目目录结构时            | 所有新增/删除的文件或目录结构变化                              |
+| [TEST.md](docs/claude/TEST.md)                       | 需要对脚本进行运行测试时           | `tests/` 下所有文件                                 |
+| [GIT.md](docs/claude/GIT.md)                         | 需要查看 Git 提交规范时         | 无（规范变更除外）                                      |
+| [MCP_SERVER.md](docs/claude/MCP_SERVER.md)           | 处理mcp服务器相关问题时          | `mcp_stdio.py`, `mcp_sse.py`, 各模块的 `config.py` |
+| [BROWSER_SERVICE.md](docs/claude/BROWSER_SERVICE.md) | 处理browser_service相关问题时 | `browser_service/` 下所有文件                       |
+| [URL_FETCHER.md](docs/claude/URL_FETCHER.md)         | 处理url_fetcher相关问题时     | `url_fetcher/` 下所有文件                           |
+| [WEB_SEARCH.md](docs/claude/WEB_SEARCH.md)           | 处理web_search相关问题时      | `web_search/` 下所有文件                            |
+| [README.md](README.md)                               | 无（用户文档，无需读取）           | 功能增减、API 变更、配置方式变化                             |
 
-| 说明文档                                                 | 读取条件                   |
-|------------------------------------------------------|------------------------|
-| [STRUCT.md](docs/claude/STRUCT.md)                   | 需要查询项目目录结构时            |
-| [TEST.md](docs/claude/TEST.md)                       | 需要对脚本进行运行测试时           |
-| [MCP_SERVER.md](docs/claude/MCP_SERVER.md)           | 处理mcp服务器相关问题时          |
-| [BROWSER_SERVICE.md](docs/claude/BROWSER_SERVICE.md) | 处理browser_service相关问题时 |
-| [URL_FETCHER.md](docs/claude/URL_FETCHER.md)         | 处理url_fetcher相关问题时     |
-| [WEB_SEARCH.md](docs/claude/WEB_SEARCH.md)           | 处理web_search相关问题时      |
