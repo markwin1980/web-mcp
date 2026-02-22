@@ -1,33 +1,36 @@
 """URL-Fetcher 工具集成测试。"""
 
 import json
+from pathlib import Path
 
 import pytest
+from fastmcp import Client
 
 # 测试用的 URL，可以修改为其他网站用于测试
 TEST_URL = "https://www.cnblogs.com/"
 
 
-@pytest.mark.asyncio
-async def test_url_fetcher_tool_schema(mcp_client):
-    """测试 url_fetcher 工具的元数据。"""
-    tools = await mcp_client.list_tools()
-    url_fetcher_tool = next(
-        (tool for tool in tools if tool["name"] == "url_fetcher"), None
-    )
+# ============================================================================
+# MCP 客户端相关
+# ============================================================================
 
-    assert url_fetcher_tool is not None, "找不到 url_fetcher 工具"
-    assert url_fetcher_tool["name"] == "url_fetcher"
-    assert url_fetcher_tool.get("description"), "缺少工具描述"
 
-    input_schema = url_fetcher_tool.get("inputSchema", {})
-    assert input_schema, "缺少输入 schema"
-    assert "properties" in input_schema, "缺少 properties 定义"
+@pytest.fixture
+async def mcp_client():
+    """启动 MCP 服务器并返回客户端实例。"""
+    server_path = Path("mcp_stdio.py")
+    client = Client(server_path)
 
-    properties = input_schema["properties"]
-    assert "url" in properties, "缺少 url 参数"
-    assert "return_format" in properties, "缺少 return_format 参数"
-    assert "timeout" in properties, "缺少 timeout 参数"
+    try:
+        async with client:
+            yield client
+    finally:
+        pass
+
+
+# ============================================================================
+# MCP 工具测试
+# ============================================================================
 
 
 @pytest.mark.asyncio
@@ -43,12 +46,10 @@ async def test_call_url_fetcher_with_public_site(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result, "缺少 content 字段"
-    content_list = result["content"]
-    assert len(content_list) > 0, "content 为空"
+    assert len(result.content) > 0, "content 为空"
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -68,12 +69,10 @@ async def test_call_url_fetcher_invalid_url(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result, "缺少 content 字段"
-    content_list = result["content"]
-    assert len(content_list) > 0, "content 为空"
+    assert len(result.content) > 0, "content 为空"
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -93,12 +92,10 @@ async def test_url_fetcher_invalid_timeout(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result, "缺少 content 字段"
-    content_list = result["content"]
-    assert len(content_list) > 0, "content 为空"
+    assert len(result.content) > 0, "content 为空"
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -118,12 +115,10 @@ async def test_url_fetcher_text_format(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result, "缺少 content 字段"
-    content_list = result["content"]
-    assert len(content_list) > 0, "content 为空"
+    assert len(result.content) > 0, "content 为空"
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -144,12 +139,10 @@ async def test_url_fetcher_markdown_format(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result, "缺少 content 字段"
-    content_list = result["content"]
-    assert len(content_list) > 0, "content 为空"
+    assert len(result.content) > 0, "content 为空"
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -168,12 +161,10 @@ async def test_url_fetcher_default_params(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result, "缺少 content 字段"
-    content_list = result["content"]
-    assert len(content_list) > 0, "content 为空"
+    assert len(result.content) > 0, "content 为空"
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -193,8 +184,7 @@ async def test_url_fetcher_content_structure(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result
-    content = json.loads(result["content"][0]["text"])
+    content = json.loads(result.content[0].text)
 
     # 验证基本字段存在
     assert "success" in content

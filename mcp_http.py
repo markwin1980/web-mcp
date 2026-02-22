@@ -1,9 +1,10 @@
-"""Web-MCP 服务器入口 - 使用 SSE (HTTP) 传输。"""
+"""Web-MCP 服务器入口 - 使用 HTTP 传输。"""
 
+import os
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 
 from browser_service import initialize_global_browser, close_global_browser
 from url_fetcher import url_fetcher
@@ -11,6 +12,9 @@ from web_search import web_search
 
 # 加载 .env 文件中的环境变量
 load_dotenv()
+
+# 从环境变量获取端口配置，默认为 8000
+PORT = int(os.getenv("MCP_SERVER_PORT", "8000"))
 
 
 @asynccontextmanager
@@ -27,6 +31,7 @@ mcp = FastMCP(
     name="web-mcp",
     instructions="MCP 服务器，提供Web搜索，URL获取等功能",
     lifespan=lifespan,
+    port=PORT,
 )
 
 # 将 web_search 函数注册为 MCP 工具

@@ -28,6 +28,23 @@
 uv sync
 ```
 
+### 配置环境变量（可选）
+
+复制 `.env.example` 为 `.env` 并根据需要修改配置：
+
+```bash
+cp .env.example .env
+```
+
+支持的配置项：
+
+- **MCP_SERVER_PORT**: SSE 模式服务器端口（默认：8000）
+- **BROWSER_HEADLESS**: 是否使用无头模式（默认：true）
+- **BROWSER_MAX_CACHED_PAGES**: 最大缓存页面数量（默认：10）
+- **BROWSER_INITIAL_PAGE_COUNT**: 初始页面数量（默认：1）
+
+详细配置说明请参考 `.env.example` 文件。
+
 ### 依赖要求
 
 - **系统要求**：
@@ -36,11 +53,10 @@ uv sync
 - **Python 依赖**：
     - markdownify >= 0.13.1
     - beautifulsoup4 >= 4.12.0
-    - mcp >= 1.26.0
+    - fastmcp == 3.0.1
     - types-beautifulsoup4 >= 4.12.0.20250516
     - python-dotenv >= 1.0.0
     - playwright >= 1.58.0
-    - playwright-stealth >= 2.0.2
 
 **首次使用需要安装以下组件**：
 
@@ -75,16 +91,16 @@ Web-MCP 支持两种传输模式：**stdio**（本地使用）和 **SSE**（远�
 }
 ```
 
-#### 方式二：SSE 传输（远程/网络使用）
+**注意**: 将 `/path/to/web-mcp` 替换为项目的实际路径。
 
-首先启动 SSE 服务器：
+#### 方式二：HTTP 传输（远程/网络使用）
+
+首先启动 HTTP 服务器：
 
 ```bash
-# 启动 SSE 服务器（默认监听 http://localhost:8000）
-uv run mcp_sse.py
+# 启动 HTTP 服务器（默认监听 http://localhost:8000）
+uv run mcp_http.py
 
-# 或指定端口和主机
-uv run mcp_sse.py --port 3000 --host 0.0.0.0
 ```
 
 然后在 MCP 客户端的配置文件中添加：
@@ -93,13 +109,11 @@ uv run mcp_sse.py --port 3000 --host 0.0.0.0
 {
   "mcpServers": {
     "web-mcp": {
-      "url": "http://localhost:8000/sse"
+      "url": "http://localhost:8000/mcp"
     }
   }
 }
 ```
-
-**注意**: 将 `/path/to/web-mcp` 替换为项目的实际路径。
 
 ### 可用工具
 

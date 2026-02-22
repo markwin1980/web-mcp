@@ -2,7 +2,7 @@
 
 ## 概述
 
-使用 FastMCP 框架实现的 MCP 服务器，支持 **stdio** 和 **sse** 两种传输模式，提供 web_search 和 url_fetcher 两个工具。
+使用 FastMCP 框架实现的 MCP 服务器，支持 **stdio** 和 **http** 两种传输模式，提供 web_search 和 url_fetcher 两个工具。
 
 ## 传输模式
 
@@ -12,19 +12,20 @@
 - **通信方式**：标准输入/输出
 - **入口文件**：`mcp_stdio.py`
 
-### sse 模式
+### http 模式
 
 - **适用场景**：远程/网络使用
 - **通信方式**：HTTP Server-Sent Events
-- **入口文件**：`mcp_sse.py`
+- **入口文件**：`mcp_http.py`
 - **默认地址**：`http://localhost:8000/sse`
+- **端口配置**：通过环境变量 `MCP_SERVER_PORT` 配置（默认值：8000）
 
 ## 项目结构
 
 入口文件：
 
 - `mcp_stdio.py` - 使用 stdio 传输（本地使用）
-- `mcp_sse.py` - 使用 SSE 传输（远程/网络使用）
+- `mcp_http.py` - 使用 HTTP 传输（远程/网络使用）
 
 - 创建 FastMCP 实例
 - 注册 lifespan 生命周期管理（初始化和关闭浏览器）
@@ -62,5 +63,6 @@ mcp_stdio.py → 创建 FastMCP → 注册 lifespan → 注册工具 → mcp.run
 | 文件                           | 说明               |
 |------------------------------|------------------|
 | `mcp_stdio.py`               | 服务器入口（stdio 传输）  |
+| `mcp_http.py`                | 服务器入口（HTTP 传输）   |
 | `url_fetcher/url_fetcher.py` | URL-Fetcher 工具实现 |
 | `web_search/web_search.py`   | Web-Search 工具实现  |

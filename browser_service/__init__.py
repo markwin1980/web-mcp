@@ -37,6 +37,7 @@ async def close_global_browser():
     async with _browser_service_lock:
         if _global_browser_service and _global_browser_service.is_initialized:
             await _global_browser_service.close()
+        _global_browser_service = None
 
 
 __all__ = [

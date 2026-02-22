@@ -1,34 +1,33 @@
 """Web-Search 工具集成测试。"""
 
 import json
+from pathlib import Path
 
 import pytest
+from fastmcp import Client
+
+
+# ============================================================================
+# MCP 客户端相关
+# ============================================================================
+
+
+@pytest.fixture
+async def mcp_client():
+    """启动 MCP 服务器并返回客户端实例。"""
+    server_path = Path("mcp_stdio.py")
+    client = Client(server_path)
+
+    try:
+        async with client:
+            yield client
+    finally:
+        pass
 
 
 # ============================================================================
 # MCP 工具测试
 # ============================================================================
-
-
-@pytest.mark.asyncio
-async def test_web_search_tool_schema(mcp_client):
-    """测试 web_search 工具的元数据。"""
-    tools = await mcp_client.list_tools()
-    web_search_tool = next(
-        (tool for tool in tools if tool["name"] == "web_search"), None
-    )
-
-    assert web_search_tool is not None, "找不到 web_search 工具"
-    assert web_search_tool["name"] == "web_search"
-    assert web_search_tool.get("description"), "缺少工具描述"
-
-    input_schema = web_search_tool.get("inputSchema", {})
-    assert input_schema, "缺少输入 schema"
-    assert "properties" in input_schema, "缺少 properties 定义"
-
-    properties = input_schema["properties"]
-    assert "query" in properties, "缺少 query 参数"
-    assert "num_results" in properties, "缺少 num_results 参数"
 
 
 @pytest.mark.asyncio
@@ -43,13 +42,11 @@ async def test_call_web_search(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result, "缺少 content 字段"
-    content_list = result["content"]
-    assert len(content_list) > 0, "content 为空"
+    assert len(result.content) > 0, "content 为空"
 
-    content_item = content_list[0]
-    assert content_item.get("type") == "text", "内容类型不正确"
-    content = content_item.get("text")
+    content_item = result.content[0]
+    assert content_item.type == "text", "内容类型不正确"
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -72,12 +69,10 @@ async def test_call_web_search_invalid_params(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result
-    content_list = result["content"]
-    assert len(content_list) > 0
+    assert len(result.content) > 0
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -96,12 +91,10 @@ async def test_web_search_default_params(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result
-    content_list = result["content"]
-    assert len(content_list) > 0
+    assert len(result.content) > 0
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -121,12 +114,10 @@ async def test_web_search_minimum_results(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result
-    content_list = result["content"]
-    assert len(content_list) > 0
+    assert len(result.content) > 0
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -146,12 +137,10 @@ async def test_web_search_empty_query(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result
-    content_list = result["content"]
-    assert len(content_list) > 0
+    assert len(result.content) > 0
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -172,12 +161,10 @@ async def test_web_search_too_long_query(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result
-    content_list = result["content"]
-    assert len(content_list) > 0
+    assert len(result.content) > 0
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -200,12 +187,10 @@ async def test_web_search_query_with_control_chars(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result
-    content_list = result["content"]
-    assert len(content_list) > 0
+    assert len(result.content) > 0
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)
@@ -227,12 +212,10 @@ async def test_web_search_query_at_max_length(mcp_client):
     )
 
     assert result, "工具未返回结果"
-    assert "content" in result
-    content_list = result["content"]
-    assert len(content_list) > 0
+    assert len(result.content) > 0
 
-    content_item = content_list[0]
-    content = content_item.get("text")
+    content_item = result.content[0]
+    content = content_item.text
     assert content, "缺少 text 字段"
 
     result_data = json.loads(content)

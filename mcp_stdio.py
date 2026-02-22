@@ -3,7 +3,7 @@
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 
 from browser_service import initialize_global_browser, close_global_browser
 from url_fetcher import url_fetcher

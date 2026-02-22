@@ -3,20 +3,42 @@
 import asyncio
 import time
 from dataclasses import dataclass
-from typing import Any
+from pathlib import Path
 
-from playwright.async_api import Browser, Page
-from playwright_stealth_plugin import async_apply
+from playwright.async_api import Browser, Page, BrowserContext, ViewportSize
 
 from browser_service.config import BrowserConfig
 from browser_service.exceptions import BrowserError, BrowserInitializationError, PageCreationError
+
+script_content: str | None = None
+
+
+async def _load_stealth_script():
+    global script_content
+
+    js_file = Path(__file__).parent / "stealth" / "stealth.js"
+    if not js_file.exists():
+        return
+    try:
+        with open(js_file, "r", encoding="utf-8") as f:
+            script_content = f.read()
+    except Exception:
+        pass
+
+
+async def _apply_stealth_script(page_or_context: Page | BrowserContext):
+    global script_content
+
+    try:
+        await page_or_context.add_init_script(script_content)
+    except Exception:
+        pass
 
 
 @dataclass
 class PooledPage:
     """池化的页面对象。"""
     page: Page
-    context: Any
     in_use: bool = False
     last_used: float = 0.0
 
@@ -24,21 +46,21 @@ class PooledPage:
 class PagePool:
     """页面池管理器，复用页面以提高性能。"""
 
-    def __init__(self, browser: Browser, config: BrowserConfig):
-        self._browser = browser
+    def __init__(self, context, config: BrowserConfig):
+        self._context = context
         self._config = config
         self._pool: list[PooledPage] = []
         self._lock = asyncio.Lock()
+        self._stealth_scripts: list[str] = []
 
     async def initialize(self):
         """初始化页面池，预先创建指定数量的页面。"""
+
         for _ in range(self._config.initial_page_count):
-            context = await self._browser.new_context()
-            page = await context.new_page()
+            page = await self._context.new_page()
 
             pooled = PooledPage(
                 page=page,
-                context=context,
                 in_use=False,
                 last_used=0.0
             )
@@ -54,12 +76,10 @@ class PagePool:
                     return pooled.page
 
             try:
-                context = await self._browser.new_context()
-                page = await context.new_page()
+                page = await self._context.new_page()
 
                 pooled = PooledPage(
                     page=page,
-                    context=context,
                     in_use=True,
                     last_used=time.time()
                 )
@@ -95,7 +115,6 @@ class PagePool:
         for pooled in unused[:to_close]:
             try:
                 await pooled.page.close()
-                await pooled.context.close()
             except Exception:
                 pass  # 关闭页面时的错误不影响清理流程
             self._pool.remove(pooled)
@@ -106,7 +125,6 @@ class PagePool:
             for pooled in self._pool:
                 try:
                     await pooled.page.close()
-                    await pooled.context.close()
                 except Exception:
                     pass  # 关闭页面时的错误不影响清理流程
             self._pool.clear()
@@ -119,6 +137,7 @@ class BrowserService:
         self.config = config or BrowserConfig.from_env()
         self._browser: Browser | None = None
         self._playwright = None
+        self._context = None
         self._page_pool: PagePool | None = None
 
     @property
@@ -131,17 +150,35 @@ class BrowserService:
         if self._browser is not None:
             return
 
+        await _load_stealth_script()
         try:
             from playwright.async_api import async_playwright
 
             self._playwright = await async_playwright().start()
-            await async_apply(self._playwright)
+
             self._browser = await self._playwright.chromium.launch(
                 headless=self.config.headless,
+                args=[
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-blink-features=AutomationControlled",
+                    "--disable-infobars",
+                ],
+                channel="chrome",
             )
 
+            self._context = await self._browser.new_context(
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+                viewport=ViewportSize(width=1280, height=720),
+                device_scale_factor=1,
+                is_mobile=False,
+                has_touch=False,
+                default_browser_type="chromium",
+            )
+            await _apply_stealth_script(self._context)
+
             self._page_pool = PagePool(
-                browser=self._browser,
+                context=self._context,
                 config=self.config
             )
 
@@ -168,6 +205,9 @@ class BrowserService:
         if self._page_pool:
             await self._page_pool.close_all()
             self._page_pool = None
+        if self._context:
+            await self._context.close()
+            self._context = None
         if self._browser:
             await self._browser.close()
             self._browser = None
