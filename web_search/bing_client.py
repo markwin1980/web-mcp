@@ -54,6 +54,7 @@ class BingClient:
         if not next_button:
             return False
 
+        await page.wait_for_timeout(1000)
         await next_button.click()
 
         try:
@@ -133,11 +134,25 @@ class BingClient:
             # 创建页面（只创建一次，用于翻页）
             page = await self._browser_service.create_page()
 
-            # 执行首次搜索
-            await self._perform_search_on_page(page, query)
-            page_results = await self._get_result_list(page)
+            # 执行首次搜索，支持重试
+            max_retries = 3
+            retry_count = 0
+            page_results = []
+
+            while retry_count < max_retries:
+                await self._perform_search_on_page(page, query)
+                page_results = await self._get_result_list(page)
+
+                if page_results:
+                    break
+
+                retry_count += 1
+                if retry_count < max_retries:
+                    await page.wait_for_timeout(1000)
+
             if not page_results:
                 return []
+
             all_results.extend(page_results)
 
             # 翻页获取更多结果
