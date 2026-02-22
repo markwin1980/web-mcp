@@ -39,7 +39,10 @@ web-mcp/
 │   ├── test_browser_service.py # 浏览器服务单元测试
 │   ├── test_mcp_server.py # MCP 服务器元数据和协议集成测试
 │   ├── test_url_fetcher.py # URL-Fetcher 工具集成测试
-│   └── test_web_search.py   # Web-Search 工具集成测试
+│   ├── test_web_dev.py   # Web-Dev 工具集成测试
+│   ├── test_web_search.py   # Web-Search 工具集成测试
+│   └── test_web_dev_files/ # Web-Dev 测试用的静态文件
+│       └── test.html     # Web-Dev 测试页面
 ├── url_fetcher/           # URL-Fetcher 功能模块
 │   ├── __init__.py       # 模块导出，提供公共 API
 │   ├── config.py         # FetcherConfig 配置类

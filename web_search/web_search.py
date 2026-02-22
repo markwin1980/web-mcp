@@ -55,7 +55,7 @@ async def web_search(
 
     Args:
         query: 搜索关键词
-        num_results: 返回结果数量，范围 1-max_results，默认为 10
+        num_results: 返回结果数量，范围 1-50，默认为 10
 
     Returns:
         JSON 格式的字符串，包含 success、query、results、total_results 和 error 字段

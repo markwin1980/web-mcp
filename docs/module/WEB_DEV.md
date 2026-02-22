@@ -2,7 +2,7 @@
 
 ## 核心功能
 
-Web-Dev 模块提供网页开发调试工具，支持会话管理、网页操作、元素信息查询、Console 日志捕获和截图功能。通过单一综合工具`web_dev`
+Web-Dev 模块提供网页开发调试工具，支持会话管理、网页操作、元素信息查询、Console 日志捕获功能。通过单一综合工具`web_dev`
 使用 `action` 参数区分不同操作。
 
 ## 处理流程
@@ -32,7 +32,6 @@ Web-Dev 模块提供网页开发调试工具，支持会话管理、网页操作
 - 设置 console 和 pageerror 事件监听器
 - 提供各类网页操作方法（导航、点击、输入、下拉、鼠标/键盘操作等）
 - 提供查询方法（元素信息、页面信息、元素搜索）
-- 提供截图功能（页面截图、元素截图）
 
 ### ConsoleHandler (`console_handler.py`)
 
@@ -66,31 +65,25 @@ Web-Dev 模块提供网页开发调试工具，支持会话管理、网页操作
 |------------------|------------|---------------------|
 | `create_session` | -          | 创建新会话，返回 session_id |
 | `close_session`  | session_id | 关闭指定会话              |
-| `list_sessions`  | session_id | 列出所有活跃会话            |
 
 ### 导航操作
 
-| Action       | 必需参数            | 可选参数                | 说明      |
-|--------------|-----------------|---------------------|---------|
-| `navigate`   | session_id, url | timeout, wait_until | 导航到 URL |
-| `go_back`    | session_id      | -                   | 后退      |
-| `go_forward` | session_id      | -                   | 前进      |
-| `reload`     | session_id      | -                   | 刷新页面    |
+| Action     | 必需参数            | 可选参数    | 说明      |
+|------------|-----------------|---------|---------|
+| `navigate` | session_id, url | timeout | 导航到 URL |
 
 ### 元素操作
 
-| Action          | 必需参数                                         | 可选参数                          | 说明       |
-|-----------------|----------------------------------------------|-------------------------------|----------|
-| `click`         | session_id, selector                         | timeout, force, no_wait_after | 点击元素     |
-| `fill`          | session_id, selector, value                  | timeout                       | 填充输入框    |
-| `type_text`     | session_id, selector, text                   | delay, timeout                | 逐个字符输入文本 |
-| `clear`         | session_id, selector                         | timeout                       | 清空输入框    |
-| `select_option` | session_id, selector                         | values, labels, timeout       | 选择下拉选项   |
-| `check`         | session_id, selector                         | timeout                       | 勾选复选框    |
-| `uncheck`       | session_id, selector                         | timeout                       | 取消勾选复选框  |
-| `hover`         | session_id, selector                         | timeout                       | 鼠标悬停     |
-| `drag_and_drop` | session_id, source_selector, target_selector | timeout                       | 拖放操作     |
-| `focus`         | session_id, selector                         | timeout                       | 聚焦元素     |
+| Action          | 必需参数                                         | 可选参数                    | 说明      |
+|-----------------|----------------------------------------------|-------------------------|---------|
+| `click`         | session_id, selector                         | timeout                 | 点击元素    |
+| `fill`          | session_id, selector, value                  | timeout                 | 填充输入框   |
+| `clear`         | session_id, selector                         | timeout                 | 清空输入框   |
+| `select_option` | session_id, selector                         | values, labels, timeout | 选择下拉选项  |
+| `check`         | session_id, selector                         | timeout                 | 勾选复选框   |
+| `uncheck`       | session_id, selector                         | timeout                 | 取消勾选复选框 |
+| `hover`         | session_id, selector                         | timeout                 | 鼠标悬停    |
+| `drag_and_drop` | session_id, source_selector, target_selector | timeout                 | 拖放操作    |
 
 ### 键盘和鼠标操作
 
@@ -114,19 +107,11 @@ Web-Dev 模块提供网页开发调试工具，支持会话管理、网页操作
 | `get_console_logs`   | session_id | type, limit | 获取 console 日志 |
 | `clear_console_logs` | session_id | -           | 清空 console 日志 |
 
-### 截图
-
-| Action       | 必需参数       | 可选参数                                         | 说明               |
-|--------------|------------|----------------------------------------------|------------------|
-| `screenshot` | session_id | full_page, selector, scale, quality, timeout | 截图（返回 base64 数据） |
-
 ### JavaScript 执行和等待
 
-| Action                | 必需参数                   | 可选参数           | 说明                |
-|-----------------------|------------------------|----------------|-------------------|
-| `evaluate`            | session_id, expression | -              | 执行 JavaScript 表达式 |
-| `wait_for_selector`   | session_id, selector   | timeout, state | 等待元素出现            |
-| `wait_for_load_state` | session_id             | state, timeout | 等待页面加载状态          |
+| Action              | 必需参数                 | 可选参数           | 说明     |
+|---------------------|----------------------|----------------|--------|
+| `wait_for_selector` | session_id, selector | timeout, state | 等待元素出现 |
 
 ## 返回格式
 
@@ -189,16 +174,6 @@ Web-Dev 模块提供网页开发调试工具，支持会话管理、网页操作
   "session_id": "uuid-here",
   "type": "error",
   "limit": 10
-}
-```
-
-### 截图
-
-```json
-{
-  "action": "screenshot",
-  "session_id": "uuid-here",
-  "full_page": true
 }
 ```
 

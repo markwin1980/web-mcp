@@ -6,14 +6,12 @@
 
 ### Web 开发调试 (Web-Dev)
 
-- **会话管理**：创建/关闭/列出多个调试会话，支持并发调试
-- **网页操作**：导航、点击、输入、下拉选择、勾选、鼠标悬停、拖放等
+- **会话管理**：创建/关闭多个独立的浏览器调试会话，支持并发调试
+- **网页操作**：导航、点击、输入、清空、下拉选择、勾选/取消勾选、鼠标悬停、拖放等
 - **键盘/鼠标操作**：按键输入、页面滚动、键盘和鼠标直接控制
-- **元素查询**：获取元素信息（位置、大小、CSS样式、属性等）、搜索元素
-- **Console 日志**：实时捕获 console 日志和 JavaScript 异常
-- **截图功能**：页面截图、元素截图，支持全页截图和指定元素截图
-- **JavaScript 执行**：直接在页面执行 JavaScript 代码
-- **智能等待**：等待元素出现、等待页面加载状态
+- **元素查询**：获取元素详细信息（位置、大小、CSS样式、属性、可见性等）、搜索匹配元素
+- **Console 日志**：实时捕获 console 日志（log/info/warn/error）和 JavaScript 异常
+- **等待机制**：`wait_for_selector` 支持等待元素达到指定状态（attached/detached/visible/hidden）
 
 ### Web 读取
 
@@ -142,24 +140,25 @@ web-mcp 提供以下三个工具：
 
 #### 1. web_dev
 
-网页开发调试工具 - 单一综合入口，通过 `action` 参数区分不同操作。
+网页开发调试工具 - 单一综合入口，通过 `action` 参数区分不同操作，具体操作参数通过 `action_data` JSON 字符串传递。
 
-| 参数           | 类型      | 必填 | 默认值   | 描述                 |
-|--------------|---------|----|-------|--------------------|
-| `action`     | string  | ✅  | -     | 操作类型，见下方支持的 action 列表 |
-| `session_id` | string  | ❌  | -     | 会话 ID（除 create_session 外都需要） |
-| `**kwargs`   | any     | ❌  | -     | 具体操作的参数          |
+| 参数            | 类型     | 必填 | 默认值     | 描述                                  |
+|---------------|--------|----|---------|-------------------------------------|
+| `action`      | string | ✅  | -       | 操作类型，见下方支持的 action 列表               |
+| `session_id`  | string | ❌  | -       | 会话 ID（除 create_session 外都需要）        |
+| `action_data` | string | ❌  | -       | JSON 字符串，包含具体操作的参数（根据 action 不同而不同） |
+| `delay`       | int    | ❌  | `1000`  | 执行后等待毫秒数（会话操作忽略）                    |
+| `timeout`     | int    | ❌  | `30000` | 操作超时毫秒数                             |
 
 **支持的 Action**：
 
-- **会话管理**：`create_session`, `close_session`, `list_sessions`
-- **导航操作**：`navigate`, `go_back`, `go_forward`, `reload`
-- **元素操作**：`click`, `fill`, `type_text`, `clear`, `select_option`, `check`, `uncheck`, `hover`, `drag_and_drop`, `focus`
+- **会话管理**：`create_session`, `close_session`
+- **导航操作**：`navigate`
+- **元素操作**：`click`, `fill`, `clear`, `select_option`, `check`, `uncheck`, `hover`, `drag_and_drop`
 - **键盘鼠标**：`press_key`, `scroll`
 - **查询操作**：`get_element_info`, `get_page_info`, `search_elements`
 - **Console 日志**：`get_console_logs`, `clear_console_logs`
-- **截图**：`screenshot`
-- **JavaScript**：`evaluate`, `wait_for_selector`, `wait_for_load_state`
+- **JavaScript**：`wait_for_selector`
 
 详细使用说明请参考 `docs/module/WEB_DEV.md`。
 
@@ -194,6 +193,20 @@ web-mcp 提供以下三个工具：
 ### 使用示例
 
 配置完成后，在支持 MCP 的客户端中可以直接调用工具：
+
+**Web 开发调试示例**：
+
+```
+帮我创建一个 web_dev 会话，然后导航到 https://example.com，点击页面上的按钮
+```
+
+MCP 客户端会按顺序调用 `create_session` → `navigate` → `click` 工具。
+
+典型使用流程：
+
+1. 创建会话 → 获得 `session_id`
+2. 使用该 `session_id` 执行各种操作（导航、点击、输入等）
+3. 完成后关闭会话
 
 **Web 搜索示例**：
 

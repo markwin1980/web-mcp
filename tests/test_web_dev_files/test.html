@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Dev Test Page</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 15px;
+            max-width: 900px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .section {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+        .form-group { margin-bottom: 10px; }
+        label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .click-display {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            padding: 10px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            margin: 10px 0;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .click-display.pulse {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+        .hover-box {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #8b4513;
+            transition: all 0.3s ease;
+            border: 3px dashed transparent;
+        }
+        .hover-box.hovered {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: scale(1.02);
+            border-color: white;
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+        }
+        .hover-status {
+            text-align: center;
+            margin-top: 8px;
+            font-weight: bold;
+            color: #666;
+        }
+        .hover-status.active {
+            color: #f5576c;
+        }
+        .drag-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+        .drag-box {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: grab;
+            font-weight: bold;
+            font-size: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+        .drag-box:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .drop-box {
+            width: 100px;
+            height: 100px;
+            border: 3px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #999;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        .drop-box.drag-over {
+            border-color: #38ef7d;
+            background: linear-gradient(135deg, #11998e20 0%, #38ef7d20 100%);
+            color: #11998e;
+            transform: scale(1.05);
+        }
+        .drop-box.dropped {
+            border-color: #38ef7d;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        .drop-status {
+            text-align: center;
+            margin-top: 8px;
+            font-weight: bold;
+            color: #666;
+        }
+        .drop-status.success {
+            color: #11998e;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .button-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="page-title" data-testid="page-title">Web Dev 测试页面</h1>
+
+    <div class="container">
+        <!-- 左侧：表单和点击 -->
+        <div class="section">
+            <h2>表单与点击</h2>
+            <div class="form-group">
+                <label for="text-input">文本输入框</label>
+                <input type="text" id="text-input" name="text-input" placeholder="请输入文本" data-testid="text-input">
+            </div>
+            <div class="form-group">
+                <label for="select-dropdown">下拉选择</label>
+                <select id="select-dropdown" name="select-dropdown" data-testid="select-dropdown">
+                    <option value="">请选择</option>
+                    <option value="option1">选项一</option>
+                    <option value="option2">选项二</option>
+                    <option value="option3">选项三</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>复选框</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="check1" name="check1" value="check1" data-testid="check1"> 复选1</label>
+                    <label><input type="checkbox" id="check2" name="check2" value="check2" checked data-testid="check2"> 复选2</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="click-display" id="click-counter" data-testid="click-counter">0</div>
+                <div class="button-row">
+                    <button id="click-btn" class="btn-primary" data-testid="click-btn">点击我</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：悬停和拖放 -->
+        <div class="section">
+            <h2>悬停与拖放</h2>
+            <div class="form-group">
+                <div class="hover-box" id="hover-box" data-testid="hover-box">
+                    鼠标悬停此处
+                </div>
+                <div class="hover-status" id="hover-status" data-testid="hover-status">未悬停</div>
+            </div>
+            <div class="form-group">
+                <div class="drag-container">
+                    <div class="drag-box" id="drag-source" draggable="true" data-testid="drag-source">
+                        拖动我
+                    </div>
+                    <div class="drop-box" id="drop-target" data-testid="drop-target">
+                        放置区域
+                    </div>
+                </div>
+                <div class="drop-status" id="drop-status" data-testid="drop-status">未放置</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Console 日志测试
+        console.log('页面加载成功');
+        console.info('这是信息日志');
+        console.warn('这是警告日志');
+
+        // 点击计数器
+        let clickCount = 0;
+        const clickCounter = document.getElementById('click-counter');
+        const clickBtn = document.getElementById('click-btn');
+
+        function updateCounter() {
+            clickCounter.textContent = clickCount;
+            clickCounter.classList.add('pulse');
+            setTimeout(() => clickCounter.classList.remove('pulse'), 200);
+            console.log(`计数器更新: ${clickCount}`);
+        }
+
+        clickBtn.addEventListener('click', () => {
+            clickCount++;
+            updateCounter();
+        });
+
+        // 悬停测试
+        const hoverBox = document.getElementById('hover-box');
+        const hoverStatus = document.getElementById('hover-status');
+
+        hoverBox.addEventListener('mouseenter', () => {
+            hoverBox.classList.add('hovered');
+            hoverStatus.textContent = '已悬停';
+            hoverStatus.classList.add('active');
+            console.log('鼠标进入悬停区域');
+        });
+
+        hoverBox.addEventListener('mouseleave', () => {
+            hoverBox.classList.remove('hovered');
+            hoverStatus.textContent = '未悬停';
+            hoverStatus.classList.remove('active');
+            console.log('鼠标离开悬停区域');
+        });
+
+        // 拖放测试
+        const dragSource = document.getElementById('drag-source');
+        const dropTarget = document.getElementById('drop-target');
+        const dropStatus = document.getElementById('drop-status');
+
+        dragSource.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', 'drag-source');
+            console.log('开始拖动');
+        });
+
+        dropTarget.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropTarget.classList.add('drag-over');
+        });
+
+        dropTarget.addEventListener('dragleave', () => {
+            dropTarget.classList.remove('drag-over');
+        });
+
+        dropTarget.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropTarget.classList.remove('drag-over');
+            dropTarget.classList.add('dropped');
+            dropTarget.textContent = '已放置!';
+            dropStatus.textContent = '已放置';
+            dropStatus.classList.add('success');
+            dragSource.style.display = 'none';
+            console.log('元素已放置');
+        });
+
+        // 页面加载完成
+        window.addEventListener('load', () => {
+            console.log('window load 事件触发');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOMContentLoaded 事件触发');
+        });
+
+        // 测试错误日志
+        setTimeout(() => {
+            try {
+                throw new Error('这是一个测试错误');
+            } catch (e) {
+                console.error('捕获到测试错误:', e.message);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

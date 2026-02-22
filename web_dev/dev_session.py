@@ -1,10 +1,8 @@
 """调试会话 - 封装单个浏览器页面的调试会话。"""
 
-import asyncio
 import base64
 from dataclasses import dataclass
 from typing import Any
-from pathlib import Path
 
 from playwright.async_api import Page, Keyboard, Mouse
 
@@ -115,15 +113,14 @@ class DevSession:
 
     # ========== 导航操作 ==========
 
-    async def navigate(self, url: str, timeout: float = 30000, wait_until: str = "load") -> None:
+    async def navigate(self, url: str, timeout: float = 30000) -> None:
         """导航到指定 URL。
 
         Args:
             url: 目标 URL
             timeout: 超时时间（毫秒）
-            wait_until: 等待事件 ("load", "domcontentloaded", "networkidle", "commit")
         """
-        await self._page.goto(url, timeout=timeout, wait_until=wait_until)
+        await self._page.goto(url, timeout=timeout, wait_until="networkidle")
 
     async def go_back(self) -> None:
         """后退。"""
@@ -140,32 +137,28 @@ class DevSession:
     # ========== 元素操作 ==========
 
     async def click(
-        self,
-        selector: str,
-        timeout: float = 30000,
-        force: bool = False,
-        no_wait_after: bool = False,
+            self,
+            selector: str,
+            timeout: float = 30000,
     ) -> None:
         """点击元素。
 
         Args:
             selector: 元素选择器
             timeout: 超时时间（毫秒）
-            force: 是否强制点击
-            no_wait_after: 是否不等待导航
         """
         await self._page.click(
             selector,
             timeout=timeout,
-            force=force,
-            no_wait_after=no_wait_after,
+            force=False,
+            no_wait_after=False,
         )
 
     async def fill(
-        self,
-        selector: str,
-        value: str,
-        timeout: float = 30000,
+            self,
+            selector: str,
+            value: str,
+            timeout: float = 30000,
     ) -> None:
         """填充输入框。
 
@@ -177,11 +170,11 @@ class DevSession:
         await self._page.fill(selector, value, timeout=timeout)
 
     async def type_text(
-        self,
-        selector: str,
-        text: str,
-        delay: float = 0,
-        timeout: float = 30000,
+            self,
+            selector: str,
+            text: str,
+            delay: float = 0,
+            timeout: float = 30000,
     ) -> None:
         """逐个字符输入文本。
 
@@ -203,11 +196,11 @@ class DevSession:
         await self._page.fill(selector, "", timeout=timeout)
 
     async def select_option(
-        self,
-        selector: str,
-        values: str | list[str] | None = None,
-        labels: str | list[str] | None = None,
-        timeout: float = 30000,
+            self,
+            selector: str,
+            values: str | list[str] | None = None,
+            labels: str | list[str] | None = None,
+            timeout: float = 30000,
     ) -> None:
         """选择下拉选项。
 
@@ -252,10 +245,10 @@ class DevSession:
         await self._page.hover(selector, timeout=timeout)
 
     async def drag_and_drop(
-        self,
-        source_selector: str,
-        target_selector: str,
-        timeout: float = 30000,
+            self,
+            source_selector: str,
+            target_selector: str,
+            timeout: float = 30000,
     ) -> None:
         """拖放操作。
 
@@ -292,9 +285,9 @@ class DevSession:
         return self._page.mouse
 
     async def press_key(
-        self,
-        key: str,
-        delay: float = 0,
+            self,
+            key: str,
+            delay: float = 0,
     ) -> None:
         """按下键盘按键。
 
@@ -305,9 +298,9 @@ class DevSession:
         await self._page.keyboard.press(key, delay=delay)
 
     async def scroll(
-        self,
-        x: float | None = None,
-        y: float | None = None,
+            self,
+            x: float | None = None,
+            y: float | None = None,
     ) -> None:
         """滚动页面。
 
@@ -325,9 +318,9 @@ class DevSession:
     # ========== 查询操作 ==========
 
     async def get_element_info(
-        self,
-        selector: str,
-        timeout: float = 30000,
+            self,
+            selector: str,
+            timeout: float = 30000,
     ) -> ElementInfo:
         """获取元素信息。
 
@@ -432,8 +425,8 @@ class DevSession:
         viewport_size = None
         if viewport:
             viewport_size = {
-                "width": viewport.width,
-                "height": viewport.height,
+                "width": viewport["width"],
+                "height": viewport["height"],
             }
 
         cookies = await self._page.context.cookies(self._page.url) if self._page.context else None
@@ -447,9 +440,9 @@ class DevSession:
         )
 
     async def search_elements(
-        self,
-        selector: str,
-        timeout: float = 5000,
+            self,
+            selector: str,
+            timeout: float = 5000,
     ) -> list[dict[str, Any]]:
         """搜索元素。
 
@@ -485,12 +478,12 @@ class DevSession:
     # ========== 截图操作 ==========
 
     async def screenshot(
-        self,
-        full_page: bool = False,
-        selector: str | None = None,
-        scale: float = 1.0,
-        quality: int | None = None,
-        timeout: float = 30000,
+            self,
+            full_page: bool = False,
+            selector: str | None = None,
+            scale: float = 1.0,
+            quality: int | None = None,
+            timeout: float = 30000,
     ) -> str:
         """截图并返回 base64 编码的图片数据。
 
@@ -540,10 +533,10 @@ class DevSession:
         return await self._page.evaluate(expression, kwargs)
 
     async def wait_for_selector(
-        self,
-        selector: str,
-        timeout: float = 30000,
-        state: str = "visible",
+            self,
+            selector: str,
+            timeout: float = 30000,
+            state: str = "visible",
     ) -> None:
         """等待元素出现。
 
@@ -555,9 +548,9 @@ class DevSession:
         await self._page.wait_for_selector(selector, timeout=timeout, state=state)
 
     async def wait_for_load_state(
-        self,
-        state: str = "load",
-        timeout: float = 30000,
+            self,
+            state: str = "load",
+            timeout: float = 30000,
     ) -> None:
         """等待页面加载状态。
 
